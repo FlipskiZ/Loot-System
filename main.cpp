@@ -15,6 +15,8 @@ bool insideMap(double x, double y, double width, double height);
 int addButtonToList(unique_ptr<Button> &&newButton);
 int addWeaponToList(unique_ptr<ItemWeapon> &&newWeapon);
 int addBulletToList(unique_ptr<MissileBullet> &&newBullet);
+int addZombieToList(unique_ptr<LivingZombie> &&newZombie);
+int addParticleToList(unique_ptr<EntityParticle> &&newParticle);
 void loadMapArray();
 void saveMapArray();
 void drawMap();
@@ -31,6 +33,7 @@ ALLEGRO_BITMAP *cursorImage;
 ALLEGRO_BITMAP *playerImage;
 ALLEGRO_BITMAP *bulletImage;
 ALLEGRO_BITMAP *explosionImage;
+ALLEGRO_BITMAP *zombieImage;
 
 ALLEGRO_KEYBOARD_STATE keyState;
 ALLEGRO_MOUSE_STATE mouseState;
@@ -39,6 +42,8 @@ ALLEGRO_TIMER *timer;
 
 vector<unique_ptr<Button>> buttonList;
 vector<unique_ptr<LivingPlayer>> playerList;
+vector<unique_ptr<LivingEntity>> livingList;
+vector<unique_ptr<EntityParticle>> particleList;
 vector<unique_ptr<Item>> itemList;
 vector<unique_ptr<MissileEntity>> missileList;
 
@@ -46,7 +51,7 @@ Engine engine;
 
 double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 int tileSize;
-int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES;
+int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES;
 double FPS, ticksPerSecond;
 
 vector<vector<int> > mapArray;
@@ -172,7 +177,7 @@ int main(){
 
 void loadConfig(){
     screenWidth = 1280, screenHeight = 720, mapDisplayWidth = 1280, mapDisplayHeight = 640, mapArrayWidth = 40, mapArrayHeight = 20, tileSize = 32;
-    MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000;
+    MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000;
     FPS = 60, ticksPerSecond = 64;
 
     string desc;
@@ -280,6 +285,34 @@ int addBulletToList(unique_ptr<MissileBullet> &&newBullet){
         }else if(missileList[i] == NULL || (i < MAX_MISSILES && !missileList[i]->getActive())){
             newBullet->setEntityId(i);
             missileList[i] = move(newBullet);
+            return i;
+        }
+    }
+}
+
+int addZombieToList(unique_ptr<LivingZombie> &&newZombie){
+    for(int i = 0; i < livingList.size()+1; i++){
+        if(i < MAX_LIVING && i >= livingList.size()){
+            newZombie->setEntityId(i);
+            livingList.push_back(move(newZombie));
+            return i;
+        }else if(livingList[i] == NULL || (i < MAX_LIVING && !livingList[i]->getActive())){
+            newZombie->setEntityId(i);
+            livingList[i] = move(newZombie);
+            return i;
+        }
+    }
+}
+
+int addParticleToList(unique_ptr<EntityParticle> &&newParticle){
+    for(int i = 0; i < particleList.size()+1; i++){
+        if(i < MAX_PARTICLES && i >= particleList.size()){
+            newParticle->setEntityId(i);
+            particleList.push_back(move(newParticle));
+            return i;
+        }else if(particleList[i] == NULL || (i < MAX_PARTICLES && !particleList[i]->getActive())){
+            newParticle->setEntityId(i);
+            particleList[i] = move(newParticle);
             return i;
         }
     }

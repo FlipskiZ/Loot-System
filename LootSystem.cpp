@@ -202,13 +202,13 @@ void LootSystem::createWeapon(int level){
 
     double randNum = randDouble();
 
-    if(randNum < 0.45){ //Approx. 45% Normal - 25% uncommon - 15% rare - 10% epic - 3% legendary - 2% unique
+    if(randNum < 0.45){ //Approx. 45% Normal - 25% uncommon - 15% rare - 8% epic - 5% legendary - 2% unique
         weaponRarity = itemCommon;
     }else if(randNum < 0.70){
         weaponRarity = itemUncommon;
     }else if(randNum < 0.85){
         weaponRarity = itemRare;
-    }else if(randNum < 0.95){
+    }else if(randNum < 0.93){
         weaponRarity = itemEpic;
     }else if(randNum < 0.98){
         weaponRarity = itemLegendary;

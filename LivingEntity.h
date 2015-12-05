@@ -7,7 +7,15 @@ class LivingEntity : public Entity{
     public:
         LivingEntity();
 
+        double getCurrentHP();
+        double getMaxHP();
+
+        void setMaxHP(double maxHP);
+        void setCurrentHP(double currentHP);
+        virtual void takeDamage(double damage) = 0;
+
     protected:
+        double livingHP, livingMaxHP;
 
     private:
 };

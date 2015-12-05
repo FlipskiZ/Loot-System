@@ -36,6 +36,8 @@
 		<Unit filename="Engine.h" />
 		<Unit filename="Entity.cpp" />
 		<Unit filename="Entity.h" />
+		<Unit filename="EntityParticle.cpp" />
+		<Unit filename="EntityParticle.h" />
 		<Unit filename="GameState.h" />
 		<Unit filename="InventoryState.cpp" />
 		<Unit filename="InventoryState.h" />
@@ -47,6 +49,8 @@
 		<Unit filename="LivingEntity.h" />
 		<Unit filename="LivingPlayer.cpp" />
 		<Unit filename="LivingPlayer.h" />
+		<Unit filename="LivingZombie.cpp" />
+		<Unit filename="LivingZombie.h" />
 		<Unit filename="LootSystem.cpp" />
 		<Unit filename="LootSystem.h" />
 		<Unit filename="MenuState.cpp" />

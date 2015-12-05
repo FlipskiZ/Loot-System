@@ -56,21 +56,11 @@ void LivingPlayer::clearInventory(){
     }
     fill(this->inventoryItemIDs.begin(), this->inventoryItemIDs.end(), -1);
 }
-/*If amount bullets > 1
 
-startingAngle = 0
-maxAngle = 90
-angleConeStart = startingAngle-maxAngle/2 = 0-90/2 = -45
-angleSlice = maxAngle/(amountBullets-1) = 90/2 = 45
+void LivingPlayer::takeDamage(double damage){
 
-For amountBullets
-angle0 = angleConeStart+angleSlice*0 = -45+0 = -45
-angle1 = angleConeStart+angleSlice*1 = -45+45 = 0
-angle2 = angleConeStart+angleSlice*2 = -45+90 = 45
+}
 
-Else
-
-Angle0 = startingAngle*/
 void LivingPlayer::fireWeapon(){
     if(this->fireRateHelper >= itemList[this->equippedWeapon]->getItemStat(weaponFireRate)){
         double width = 6, height = 6, movementSpeed = itemList[this->equippedWeapon]->getItemStat(weaponShotSpeed), sheetColums = 1, sheetRows = 1, animationSpeed = 0;
@@ -127,26 +117,41 @@ void LivingPlayer::update(){
 
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
 
+    bool colX = false, colY = false;
+
     for(double i = 0; i < loopI; i++){
-        /*for(int lI = 0; lI < livingList.size() && (!colX || !colY); lI++){
-            if(livingList[lI] != NULL && livingList[lI]->getActive()){
-                if(checkCollision(this->posX + this->deltaX_l/loopI, this->posY, livingList[lI]->posX, livingList[lI]->posY,
-                    this->width, this->height, livingList[lI]->width, livingList[lI]->height)){
+        colX = false, colY = false;
+        for(int j = 0; j < livingList.size() && (!colX || !colY); j++){
+            if(livingList[j] != NULL && livingList[j]->getActive()){
+                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
+                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){
                     colX = true;
                 }
-                if(checkCollision(this->posX, this->posY + this->deltaY_l/loopI, livingList[lI]->posX, livingList[lI]->posY,
-                    this->width, this->height, livingList[lI]->width, livingList[lI]->height)){
+                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
+                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){
                     colY = true;
                 }
             }
-        }*/
-
-        if(isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
-            this->posX += deltaX_l/loopI;
         }
 
-        if(isPassable(this->posX, this->posY + deltaY_l/loopI , this->width, this->height)){
+        if(!isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
+            colX = true;
+        }
+
+        if(!isPassable(this->posX, this->posY + deltaY_l/loopI , this->width, this->height)){
+            colY = true;
+        }
+
+        if(!colX){
+            this->posX += deltaX_l/loopI;
+        }else{
+
+        }
+
+        if(!colY){
             this->posY += deltaY_l/loopI;
+        }else{
+
         }
     }
 

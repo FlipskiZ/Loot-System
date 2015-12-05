@@ -31,6 +31,7 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     playerImage = al_load_bitmap("graphics/playerImage.png");
     bulletImage = al_load_bitmap("graphics/bulletImage.png");
     explosionImage = al_load_bitmap("graphics/explosionImage.png");
+    zombieImage = al_load_bitmap("graphics/zombieImage.png");
 
     al_reserve_samples(0); //Amount of sounds to load in the game
 

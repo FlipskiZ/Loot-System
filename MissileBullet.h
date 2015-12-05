@@ -50,6 +50,12 @@ class MissileBullet : public MissileEntity{
         double rangeBeforeSplit, rangeBeforeSplitHelper;
         double explosionLinger, explosionLingerCount;
         bool explode;
+
+        bool tileColX, tileColY;
+        bool livingColX, livingColY;
+        bool richochetX, richochetY;
+        std::vector<int> penetratedEnemies; //Keeps trach of currently penetrating enemies
+        std::vector<int> loopPenetratedEnemies; //This is in case the bullet hits multiple enemies in a loop
 };
 
 #endif // MISSILEBULLET_H

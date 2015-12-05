@@ -23,11 +23,17 @@
 #include <memory>
 
 #include "Button.h"
-#include "LivingPlayer.h"
 #include "LootSystem.h"
+
+#include "LivingPlayer.h"
+#include "LivingZombie.h"
+
+#include "MissileBullet.h"
+
+#include "EntityParticle.h"
+
 #include "ItemWeapon.h"
 #include "TileContainer.h"
-#include "MissileBullet.h"
 
 #define PI 3.14159265359
 #define toRadians 0.0174532925
@@ -78,6 +84,8 @@ bool insideMap(double x, double y, double width, double height);
 int addButtonToList(unique_ptr<Button> &&newButton);
 int addWeaponToList(unique_ptr<ItemWeapon> &&newWeapon);
 int addBulletToList(unique_ptr<MissileBullet> &&newBullet);
+int addZombieToList(unique_ptr<LivingZombie> &&newZombie);
+int addParticleToList(unique_ptr<EntityParticle> &&newParticle);
 void loadMapArray();
 void saveMapArray();
 void drawMap();
@@ -100,6 +108,7 @@ extern ALLEGRO_BITMAP *cursorImage;
 extern ALLEGRO_BITMAP *playerImage;
 extern ALLEGRO_BITMAP *bulletImage;
 extern ALLEGRO_BITMAP *explosionImage;
+extern ALLEGRO_BITMAP *zombieImage;
 
 extern ALLEGRO_KEYBOARD_STATE keyState;
 extern ALLEGRO_MOUSE_STATE mouseState;
@@ -108,11 +117,13 @@ extern ALLEGRO_TIMER *timer;
 
 extern double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 extern int tileSize;
-extern int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES;
+extern int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES;
 extern double FPS, ticksPerSecond;
 
 extern vector<unique_ptr<Button>> buttonList;
 extern vector<unique_ptr<LivingPlayer>> playerList;
+extern vector<unique_ptr<LivingEntity>> livingList;
+extern vector<unique_ptr<EntityParticle>> particleList;
 extern vector<unique_ptr<Item>> itemList;
 extern vector<unique_ptr<MissileEntity>> missileList;
 

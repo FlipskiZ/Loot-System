@@ -111,7 +111,15 @@ void PlayState::update(Engine* engine){
         }
     }else if(al_key_down(&keyState, ALLEGRO_KEY_G)){
         if(lastKeyPress != ALLEGRO_KEY_G){
-            //Debug spawn enemy
+            double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
+            unique_ptr<LivingZombie> newZombie(new LivingZombie());
+            newZombie->setPos(mouseX-width/2, mouseY-height/2);
+            newZombie->setDimensions(width, height);
+            newZombie->setMovementSpeed(movementSpeed);
+            newZombie->setSheetDimensions(sheetColums, sheetRows, width, height);
+            newZombie->setAnimationSpeed(animationSpeed);
+            newZombie->setBitmap(zombieImage);
+            addZombieToList(move(newZombie));
 
             lastKeyPress = ALLEGRO_KEY_G;
         }
@@ -155,6 +163,16 @@ void PlayState::update(Engine* engine){
             missileList[i]->update();
         }
     }
+    for(int i = 0; i < livingList.size(); i++){
+        if(livingList[i] != NULL && livingList[i]->getActive()){
+            livingList[i]->update();
+        }
+    }
+    for(int i = 0; i < particleList.size(); i++){
+        if(particleList[i] != NULL && particleList[i]->getActive()){
+            particleList[i]->update();
+        }
+    }
     /*for(int i = 0; i < MAX_BUTTONS; i++){
         if(buttonList[i] != NULL && buttonList[i]->getActive()){
             buttonList[i]->update();
@@ -193,6 +211,16 @@ void PlayState::draw(Engine* engine){
     for(int i = 0; i < playerList.size(); i++){
         if(playerList[i] != NULL && playerList[i]->getActive()){
             playerList[i]->draw();
+        }
+    }
+    for(int i = 0; i < livingList.size(); i++){
+        if(livingList[i] != NULL && livingList[i]->getActive()){
+            livingList[i]->draw();
+        }
+    }
+    for(int i = 0; i < particleList.size(); i++){
+        if(particleList[i] != NULL && particleList[i]->getActive()){
+            particleList[i]->draw();
         }
     }
     //Draw Entities -

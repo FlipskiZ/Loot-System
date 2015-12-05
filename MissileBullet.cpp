@@ -10,6 +10,11 @@ MissileBullet::MissileBullet(){
     this->explosionLinger = 0.25;
     this->explosionLingerCount = 0;
     this->explode = false;
+    this->tileColX = false, this->tileColY = false;
+    this->livingColX = false, this->livingColY = false;
+    this->richochetX = false, this->richochetY = false;
+    this->penetratedEnemies.clear();
+    this->loopPenetratedEnemies.clear();
 }
 
 void MissileBullet::setMissileStats(std::vector<double> missileStats){
@@ -34,77 +39,123 @@ void MissileBullet::update(){
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
 
     for(double i = 0; i < loopI; i++){
-        /*for(int lI = 0; lI < livingList.size() && (!colX || !colY); lI++){
-            if(livingList[lI] != NULL && livingList[lI]->getActive()){
-                if(checkCollision(this->posX + this->deltaX_l/loopI, this->posY, livingList[lI]->posX, livingList[lI]->posY,
-                    this->width, this->height, livingList[lI]->width, livingList[lI]->height)){
-                    colX = true;
-                }
-                if(checkCollision(this->posX, this->posY + this->deltaY_l/loopI, livingList[lI]->posX, livingList[lI]->posY,
-                    this->width, this->height, livingList[lI]->width, livingList[lI]->height)){
-                    colY = true;
-                }
-            }
-        }*/
+        this->tileColX = false, this->tileColY = false;
+        this->livingColX = false, this->livingColY = false;
+        this->richochetX = false, this->richochetY = false;
+        this->loopPenetratedEnemies.clear();
 
-        if(isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
-            this->posX += deltaX_l/loopI;
-        }else{
-            if(this->bulletSpecials[weaponRicochetAmount] <= 0){
-                if(this->bulletSpecials[weaponExplosionRadius] > 0){
-                    this->explode = true;
-                }else{
-                    this->setActive(false);
+        bool loopCol = false;
+
+        for(int j = 0; j < livingList.size(); j++){
+            if(livingList[j] != NULL && livingList[j]->getActive()){
+                loopCol = false;
+
+                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
+                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){ //If it collides with a livingEntity in posX
+
+                    this->livingColX = true;
+                    loopCol = true;
                 }
-            }else if(this->bulletSpecials[weaponRicochetAmount] < 1){ //If it is in between 0 and 1 decide by rng if it should bounce
-                if(randDouble() > this->bulletSpecials[weaponRicochetAmount]){
-                    this->angle = -atan2(deltaX_l, -deltaY_l);
-                    this->bulletSpecials[weaponRicochetAmount] = 0;
-                    this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-                    deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
-                }else{
-                    if(this->bulletSpecials[weaponExplosionRadius] > 0){
-                        this->explode = true;
+                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
+                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){ //If it collides with a livingEntity in posY
+
+                    this->livingColY = true;
+                    loopCol = true;
+                }
+
+                if(loopCol){
+                    if(find(penetratedEnemies.begin(), penetratedEnemies.end(), j) == penetratedEnemies.end()){//If bullet penetrates and if it hasn't already penetrated this entity
+                        if(this->bulletSpecials[weaponPenetrationAmount] > 0){
+                            if(this->bulletSpecials[weaponPenetrationAmount] >= 1 ||
+                            (this->bulletSpecials[weaponPenetrationAmount] < 1 && randDouble() < this->bulletSpecials[weaponPenetrationAmount])){
+                                this->penetratedEnemies.push_back(j);
+                                this->bulletSpecials[weaponPenetrationAmount]--;
+                                livingColX = false, livingColY = false;
+                            }else if(bulletSpecials[weaponPenetrationAmount] < 1){ //If it didn't succeed the randDouble check
+                                this->bulletSpecials[weaponPenetrationAmount] = 0;
+                            }
+                        }
+                        this->loopPenetratedEnemies.push_back(j);
                     }else{
-                        this->setActive(false);
+                        livingColX = false, livingColY = false;
                     }
                 }
-            }else{ //If ricochetAmount is >1 bounce the bullet
-                this->angle = -atan2(deltaX_l, -deltaY_l);
-                this->bulletSpecials[weaponRicochetAmount]--;
-                this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-                deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
             }
         }
 
-        if(isPassable(this->posX, this->posY + deltaY_l/loopI, this->width, this->height)){
-            this->posY += deltaY_l/loopI;
-        }else{
-            if(this->bulletSpecials[weaponRicochetAmount] <= 0){
+        vector<int>::iterator iteratorPenetrated;
+        for(int i = 0; i < this->loopPenetratedEnemies.size(); i++){
+            for(int j = 0; j < this->penetratedEnemies.size(); j++){
+                iteratorPenetrated = find(this->penetratedEnemies.begin(), this->penetratedEnemies.end(), this->loopPenetratedEnemies[i]);
+                if(iteratorPenetrated == this->penetratedEnemies.end()){
+                    this->penetratedEnemies.erase(this->penetratedEnemies.begin()+j);
+                }
+            }
+            //Damage Enemy
+        }
+
+        if(!isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
+            this->tileColX = true;
+        }
+
+        if(!isPassable(this->posX, this->posY + deltaY_l/loopI, this->width, this->height)){
+            this->tileColY = true;
+        }
+
+        if(this->tileColX || this->tileColY){
+            if(this->bulletSpecials[weaponRicochetAmount] >= 1 ||
+                (this->bulletSpecials[weaponRicochetAmount] < 1 && randDouble() < this->bulletSpecials[weaponRicochetAmount])){ //If it is in between 0 and 1 decide by rng if it should bounce
+                if(this->tileColX){
+                    this->richochetX = true;
+                }
+                if(this->tileColY){
+                    this->richochetY = true;
+                }
+            }else{
                 if(this->bulletSpecials[weaponExplosionRadius] > 0){
                     this->explode = true;
                 }else{
                     this->setActive(false);
                 }
-            }else if(this->bulletSpecials[weaponRicochetAmount] < 1){ //If it is in between 0 and 1 decide by rng if it should bounce
-                if(randDouble() > this->bulletSpecials[weaponRicochetAmount]){
-                    this->angle = -atan2(-deltaX_l, deltaY_l);
-                    this->bulletSpecials[weaponRicochetAmount] = 0;
-                    this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-                    deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
-                }else{
-                    if(this->bulletSpecials[weaponExplosionRadius] > 0){
-                        this->explode = true;
-                    }else{
-                        this->setActive(false);
-                    }
-                }
-            }else{ //If ricochetAmount is >1 bounce the bullet
-                this->angle = -atan2(-deltaX_l, deltaY_l);
-                this->bulletSpecials[weaponRicochetAmount]--;
-                this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-                deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
             }
+        }
+
+        if(this->richochetX){
+            this->angle = -atan2(deltaX_l, -deltaY_l);
+            this->bulletSpecials[weaponRicochetAmount]--;
+            this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
+            deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
+        }
+
+        if(this->richochetY){
+            this->angle = -atan2(-deltaX_l, deltaY_l);
+            this->bulletSpecials[weaponRicochetAmount]--;
+            this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
+            deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
+        }
+
+        if(this->livingColX){
+            if(this->bulletSpecials[weaponExplosionRadius] > 0){
+                this->explode = true;
+            }else{
+                this->setActive(false);
+            }
+        }
+
+        if(this->livingColY){
+            if(this->bulletSpecials[weaponExplosionRadius] > 0){
+                this->explode = true;
+            }else{
+                this->setActive(false);
+            }
+        }
+
+        if(!this->tileColX && !this->livingColX){
+            this->posX += deltaX_l/loopI;
+        }
+
+        if(!this->tileColY && !this->livingColY){
+            this->posY += deltaY_l/loopI;
         }
     }
 
