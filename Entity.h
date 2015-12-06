@@ -13,11 +13,11 @@ class Entity{
         void updateCenter();
         void updateAnimation();
 
-        std::vector<double> getPosition();
-        std::vector<double> getCenterPosition();
-        std::vector<double> getDimension();
+        double getPosition(int xory);
+        double getCenterPosition(int xory);
+        double getDimension(int worh);
         double getMovementSpeed();
-        std::vector<double> getDelta();
+        double getDelta(int xory);
         int getEntityId();
         int getTypeId();
         double getAngle(); //Degrees

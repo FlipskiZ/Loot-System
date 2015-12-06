@@ -78,6 +78,14 @@ enum weaponSpecials{
     AMOUNT_WEAPON_SPECIALS //Amount of entries
 };
 
+enum particlePatterns{
+    patternHomeToPlayer = 0,
+    patternHomeToMouse,
+    patternKeepMomentum,
+    patternJumpUp,
+    patternJumpUpGravity,
+};
+
 string itos(int arg); //converts an integer to a std::string
 string dtos(double arg); //converts an float to a std::string
 bool isPassable(double x, double y, double width, double height);
@@ -137,6 +145,8 @@ extern double cameraPosX, cameraPosY, cameraOffsetX, cameraOffsetY, mapDisplayOf
 extern bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick, mouseButtonRight, mouseButtonRightClick, inGame;
 extern double mouseX, mouseY, volumeLevel;
 extern int lastKeyPress, mouseWheel;
+
+extern int enemyLevel;
 
 extern vector<vector<int> > mapArray;
 

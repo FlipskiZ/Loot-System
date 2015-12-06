@@ -62,6 +62,8 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     mouseX = 0, mouseY = 0, volumeLevel = 1;
     lastKeyPress = 0, mouseWheel = 0;
 
+    enemyLevel = 1;
+
     loadMapArray();
 
     al_start_timer(timer);

@@ -20,12 +20,18 @@ void LivingZombie::takeDamage(double damage, bool crit){
     newParticle->setTextValue(textValue, fontValue);
     newParticle->setColor(colorValue);
     addParticleToList(move(newParticle));
+
+    this->livingHP -= damage;
+
+    if(this->livingHP <= 0){
+        this->setActive(false);
+    }
 }
 
 void LivingZombie::update(){
-    setAngle(-atan2(this->getCenterPosition()[0] - playerList[0]->getCenterPosition()[0], this->getCenterPosition()[1] - playerList[0]->getCenterPosition()[1]));
+    setAngle(-atan2(this->getCenterPosition(0) - playerList[0]->getCenterPosition(0), this->getCenterPosition(1) - playerList[0]->getCenterPosition(1)));
     this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-    double deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
+    double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
 
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
 
@@ -35,23 +41,23 @@ void LivingZombie::update(){
         colX = false, colY = false;
         for(int j = 0; j < livingList.size() && (!colX || !colY); j++){
             if(livingList[j] != NULL && livingList[j]->getActive() && j != this->entityId){
-                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
-                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){
+                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition(0), livingList[j]->getPosition(1),
+                    this->width, this->height, livingList[j]->getDimension(0), livingList[j]->getDimension(1))){
                     colX = true;
                 }
-                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
-                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){
+                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition(0), livingList[j]->getPosition(1),
+                    this->width, this->height, livingList[j]->getDimension(0), livingList[j]->getDimension(1))){
                     colY = true;
                 }
             }
         }
 
-        if(checkCollision(this->posX + deltaX_l/loopI, this->posY, playerList[0]->getPosition()[0], playerList[0]->getPosition()[1],
-            this->width, this->height, playerList[0]->getDimension()[0], playerList[0]->getDimension()[1])){
+        if(checkCollision(this->posX + deltaX_l/loopI, this->posY, playerList[0]->getPosition(0), playerList[0]->getPosition(1),
+            this->width, this->height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
             colX = true;
         }
-        if(checkCollision(this->posX, this->posY + deltaY_l/loopI, playerList[0]->getPosition()[0], playerList[0]->getPosition()[1],
-            this->width, this->height, playerList[0]->getDimension()[0], playerList[0]->getDimension()[1])){
+        if(checkCollision(this->posX, this->posY + deltaY_l/loopI, playerList[0]->getPosition(0), playerList[0]->getPosition(1),
+            this->width, this->height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
             colY = true;
         }
 
@@ -82,4 +88,10 @@ void LivingZombie::update(){
 
 void LivingZombie::draw(){
     al_draw_rotated_bitmap(this->frameImage, this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
+
+    //HP bar
+    if(this->livingHP < this->livingMaxHP){
+        al_draw_rectangle(this->posX-1, this->posY-11, this->posX+this->width+1, this->posY-4, al_map_rgb(200,200,200), 2);
+        al_draw_filled_rectangle(this->posX, this->posY-10, 2+(this->posX-2)+this->width/this->livingMaxHP*this->livingHP, this->posY-5, al_map_rgb(200,0,0));
+    }
 }

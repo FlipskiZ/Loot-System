@@ -34,7 +34,7 @@ void MissileBullet::update(){
         return;
     }
     this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-    double deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
+    double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
 
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
 
@@ -50,14 +50,14 @@ void MissileBullet::update(){
             if(livingList[j] != NULL && livingList[j]->getActive()){
                 loopCol = false;
 
-                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
-                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){ //If it collides with a livingEntity in posX
+                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition(0), livingList[j]->getPosition(1),
+                    this->width, this->height, livingList[j]->getDimension(0), livingList[j]->getDimension(1))){ //If it collides with a livingEntity in posX
 
                     this->livingColX = true;
                     loopCol = true;
                 }
-                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition()[0], livingList[j]->getPosition()[1],
-                    this->width, this->height, livingList[j]->getDimension()[0], livingList[j]->getDimension()[1])){ //If it collides with a livingEntity in posY
+                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition(0), livingList[j]->getPosition(1),
+                    this->width, this->height, livingList[j]->getDimension(0), livingList[j]->getDimension(1))){ //If it collides with a livingEntity in posY
 
                     this->livingColY = true;
                     loopCol = true;
@@ -121,18 +121,11 @@ void MissileBullet::update(){
             }
         }
 
-        if(this->richochetX){
-            this->angle = -atan2(deltaX_l, -deltaY_l);
+        if(this->richochetX || this->richochetY){
+            this->angle = -atan2((richochetY) ? -deltaX_l : deltaX_l, (richochetX) ? -deltaY_l : deltaY_l);
             this->bulletSpecials[weaponRicochetAmount]--;
             this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-            deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
-        }
-
-        if(this->richochetY){
-            this->angle = -atan2(-deltaX_l, deltaY_l);
-            this->bulletSpecials[weaponRicochetAmount]--;
-            this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-            deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
+            deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
         }
 
         if(this->livingColX){

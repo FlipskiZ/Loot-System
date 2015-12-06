@@ -14,6 +14,7 @@ class EntityParticle : public Entity{
         void draw();
 
         int getMovePattern();
+        std::vector<double> getMovePatternMovement();
         double getTimeAlive();
         double getDeathTime();
         double getFriction();

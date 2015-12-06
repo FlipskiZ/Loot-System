@@ -67,6 +67,8 @@ bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick, mouseB
 double mouseX, mouseY, volumeLevel;
 int lastKeyPress, mouseWheel = 0;
 
+int enemyLevel;
+
 TILE_TYPE tileIndex[] = {
 	{true}, // (0) TILE_GROUND1
 	{false}, // (1) TILE_WALL
@@ -389,8 +391,8 @@ void drawTile(double x, double y, int tileId){
 }
 
 void updateCamera(){
-    cameraPosX = playerList[0]->getPosition()[0]-mapDisplayWidth/2+playerList[0]->getDimension()[0]/2;
-    cameraPosY = playerList[0]->getPosition()[1]-mapDisplayHeight/2+playerList[0]->getDimension()[1]/2;
+    cameraPosX = playerList[0]->getPosition(0)-mapDisplayWidth/2+playerList[0]->getDimension(0)/2;
+    cameraPosY = playerList[0]->getPosition(1)-mapDisplayHeight/2+playerList[0]->getDimension(1)/2;
 
     if(cameraPosX < 0){
         cameraPosX = 0;

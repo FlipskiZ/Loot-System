@@ -11,6 +11,26 @@ EntityParticle::EntityParticle(){
 int EntityParticle::getMovePattern(){
     return this->particleMovePattern;
 }
+vector<double> EntityParticle::getMovePatternMovement(){
+    /*patternHomeToPlayer = 0,
+    patternHomeToMouse,
+    patternKeepMomentum,
+    patternJumpUp,
+    patternJumpUpGravity,*/
+    vector<double> deltaV;
+    switch(this->particleMovePattern){
+        case patternHomeToPlayer:
+            break;
+        case patternHomeToMouse:
+            break;
+        case patternKeepMomentum:
+            break;
+        case patternJumpUp:
+            break;
+        case patternJumpUpGravity:
+            break;
+    }
+}
 double EntityParticle::getTimeAlive(){
     return this->particleTimeAlive;
 }
@@ -65,9 +85,9 @@ void EntityParticle::update(){
         this->setActive(false);
     }
 
-    setAngle(-atan2(this->getCenterPosition()[0] - playerList[0]->getCenterPosition()[0], this->getCenterPosition()[1] - playerList[0]->getCenterPosition()[1]));
+    setAngle(-atan2(this->getCenterPosition(0) - playerList[0]->getCenterPosition(0), this->getCenterPosition(1) - playerList[0]->getCenterPosition(1)));
     this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
-    double deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
+    double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
 
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
 

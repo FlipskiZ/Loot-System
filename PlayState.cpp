@@ -11,11 +11,13 @@ void PlayState::init(){
 
     //Create Player
     double width = 24, height = 24, movementSpeed = 128, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25, inventorySpace = 20;
+    double maxHP = 10;
     playerList.resize(1);
     playerList[0] = unique_ptr<LivingPlayer>(new LivingPlayer());
     playerList[0]->setPos(mapDisplayWidth/2-width/2, mapDisplayHeight/2-height/2);
     playerList[0]->setDimensions(width, height);
     playerList[0]->setMovementSpeed(movementSpeed);
+    playerList[0]->setMaxHP(maxHP);
     playerList[0]->setSheetDimensions(sheetColums, sheetRows, width, height);
     playerList[0]->setAnimationSpeed(animationSpeed);
     playerList[0]->setBitmap(playerImage);
@@ -78,8 +80,8 @@ void PlayState::update(Engine* engine){
     }
 
     if(vertical != 0 && horizontal != 0){
-        playerList[0]->setDeltaX(playerList[0]->getDelta()[0]/deltaTime / twoSqrt);
-        playerList[0]->setDeltaY(playerList[0]->getDelta()[1]/deltaTime / twoSqrt);
+        playerList[0]->setDeltaX(playerList[0]->getDelta(0)/deltaTime / twoSqrt);
+        playerList[0]->setDeltaY(playerList[0]->getDelta(1)/deltaTime / twoSqrt);
     }
 
     if(!mouseButtonLeft && !mouseButtonLeftClick){ //Sets the angle for the player depending on the keys presset
@@ -97,31 +99,31 @@ void PlayState::update(Engine* engine){
             playerList[0]->setAngle(270*toRadians+(horizontal-1)*180*toRadians);
         }
     }else if(mouseY <= mapDisplayHeight){ //If the mouse is within the map bounds
-        playerList[0]->setAngle(-atan2(playerList[0]->getCenterPosition()[0] + cameraOffsetX - mouseX, playerList[0]->getCenterPosition()[1] + cameraOffsetY - mouseY));
+        playerList[0]->setAngle(-atan2(playerList[0]->getCenterPosition(0) + cameraOffsetX - mouseX, playerList[0]->getCenterPosition(1) + cameraOffsetY - mouseY));
         playerList[0]->setAnimationValue(2, false, 1);
         if(mouseButtonLeft){
             playerList[0]->fireWeapon();
         }
     }
 
+    if(al_key_down(&keyState, ALLEGRO_KEY_G)){
+        double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
+        double maxHP = randInt(enemyLevel, enemyLevel*10);
+        unique_ptr<LivingZombie> newZombie(new LivingZombie());
+        newZombie->setPos(mouseX-width/2, mouseY-height/2);
+        newZombie->setDimensions(width, height);
+        newZombie->setMovementSpeed(movementSpeed);
+        newZombie->setMaxHP(maxHP);
+        newZombie->setSheetDimensions(sheetColums, sheetRows, width, height);
+        newZombie->setAnimationSpeed(animationSpeed);
+        newZombie->setBitmap(zombieImage);
+        addZombieToList(move(newZombie));
+    }
+
     if(al_key_down(&keyState, ALLEGRO_KEY_F5)){
         if(lastKeyPress != ALLEGRO_KEY_F5){
             loadMapArray();
             lastKeyPress = ALLEGRO_KEY_F5;
-        }
-    }else if(al_key_down(&keyState, ALLEGRO_KEY_G)){
-        if(lastKeyPress != ALLEGRO_KEY_G){
-            double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
-            unique_ptr<LivingZombie> newZombie(new LivingZombie());
-            newZombie->setPos(mouseX-width/2, mouseY-height/2);
-            newZombie->setDimensions(width, height);
-            newZombie->setMovementSpeed(movementSpeed);
-            newZombie->setSheetDimensions(sheetColums, sheetRows, width, height);
-            newZombie->setAnimationSpeed(animationSpeed);
-            newZombie->setBitmap(zombieImage);
-            addZombieToList(move(newZombie));
-
-            lastKeyPress = ALLEGRO_KEY_G;
         }
     }else if(al_key_down(&keyState, ALLEGRO_KEY_I)){
         if(lastKeyPress != ALLEGRO_KEY_I){
@@ -135,19 +137,14 @@ void PlayState::update(Engine* engine){
             //engine->changeState(PlayState::instance());
             lastKeyPress = ALLEGRO_KEY_ESCAPE;
         }
-    }else if(al_key_down(&keyState, ALLEGRO_KEY_COMMA)){
-        if(lastKeyPress != ALLEGRO_KEY_COMMA){
-            if(volumeLevel > 0)
-                volumeLevel -= 0.1;
-
-            lastKeyPress = ALLEGRO_KEY_COMMA;
+    }
+    if(al_key_down(&keyState, ALLEGRO_KEY_COMMA)){
+        if(enemyLevel > 1){
+            enemyLevel--;
         }
     }else if(al_key_down(&keyState, ALLEGRO_KEY_FULLSTOP)){
-        if(lastKeyPress != ALLEGRO_KEY_FULLSTOP){
-            if(volumeLevel < 1)
-                volumeLevel += 0.1;
-
-            lastKeyPress = ALLEGRO_KEY_FULLSTOP;
+        if(enemyLevel < 100){
+            enemyLevel++;
         }
     }
     //Player Input -
@@ -232,4 +229,5 @@ void PlayState::draw(Engine* engine){
     fpsCounter = 1/(fpsTimeNew - fpsTimeOld);
     fpsTimeOld = fpsTimeNew;
     al_draw_textf(defaultFont, (fpsCounter > 55) ? al_map_rgb(50, 150, 50) : (fpsCounter <= 55 && fpsCounter > 30) ? al_map_rgb(150, 150, 50) : al_map_rgb(150, 50, 50), screenWidth-95, mapDisplayHeight, NULL, "FPS: %d", (int)round(fpsCounter));
+    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+25, ALLEGRO_ALIGN_RIGHT, "Enemy Level: %d", enemyLevel);
 }

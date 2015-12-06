@@ -29,26 +29,21 @@ Entity::Entity(){
     this->active = true;
 }
 
-vector<double> Entity::getPosition(){
-    vector<double> position = {this->posX, this->posY};
-    return position;
+double Entity::getPosition(int xory){
+    return (xory == 0) ? this->posX : this->posY;
 
 }
-vector<double> Entity::getCenterPosition(){
-    vector<double> position = {this->centerX, this->centerY};
-    return position;
-
+double Entity::getCenterPosition(int xory){
+    return (xory == 0) ? this->centerX : this->centerY;
 }
-vector<double> Entity::getDimension(){
-    vector<double> dimension = {this->width, this->height};
-    return dimension;
+double Entity::getDimension(int worh){
+    return (worh == 0) ? this->width : this->height;
 }
 double Entity::getMovementSpeed(){
     return this->movementSpeed;
 }
-vector<double> Entity::getDelta(){
-    vector<double> deltaV = {this->deltaX, this->deltaY};
-    return deltaV;
+double Entity::getDelta(int xory){
+    return (xory == 0) ? this->deltaX : this->deltaY;
 }
 int Entity::getEntityId(){
     return this->entityId;
