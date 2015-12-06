@@ -92,6 +92,7 @@ void MissileBullet::update(){
                 }
             }
             //Damage Enemy
+            livingList[loopPenetratedEnemies[i]]->takeDamage(randDouble(this->bulletStats[weaponMinDamage], this->bulletStats[weaponMaxDamage]), false);
         }
 
         if(!isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){

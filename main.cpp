@@ -8,6 +8,8 @@ struct TILE_TYPE{
 	bool isPassable;
 };
 
+string itos(int arg); //converts an integer to a std::string
+string dtos(double arg); //converts an float to a std::string
 void loadConfig();
 bool isPassable(double x, double y, double width, double height, double deltaX, double deltaY);
 bool checkCollision(double x, double y, double ex, double ey, double width, double height, double ewidth, double eheight);
@@ -173,6 +175,18 @@ int main(){
 	// cleanup the engine
 	engine.cleanup();
 
+}
+
+string itos(int arg){
+    ostringstream buffer;
+    buffer << arg;
+    return buffer.str();
+}
+
+string dtos(double arg){
+    ostringstream buffer;
+    buffer << arg;
+    return buffer.str();
 }
 
 void loadConfig(){

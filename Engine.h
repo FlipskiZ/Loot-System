@@ -78,6 +78,8 @@ enum weaponSpecials{
     AMOUNT_WEAPON_SPECIALS //Amount of entries
 };
 
+string itos(int arg); //converts an integer to a std::string
+string dtos(double arg); //converts an float to a std::string
 bool isPassable(double x, double y, double width, double height);
 bool checkCollision(double x, double y, double ex, double ey, double width, double height, double ewidth, double eheight);
 bool insideMap(double x, double y, double width, double height);

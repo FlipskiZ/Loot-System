@@ -5,8 +5,21 @@ LivingZombie::LivingZombie(){
 
 }
 
-void LivingZombie::takeDamage(double damage){
+void LivingZombie::takeDamage(double damage, bool crit){
+    double movementSpeed = 128, deathTime = 0.5, frictionValue = 0.99;
+    int movePattern = 0, fontValue = 0;
+    string textValue = dtos(damage);
+    ALLEGRO_COLOR colorValue = al_map_rgb(255, 50, 50);
 
+    unique_ptr<EntityParticle> newParticle(new EntityParticle);
+    newParticle->setPos(this->centerX, this->posY);
+    newParticle->setMovementSpeed(movementSpeed);
+    newParticle->setMovePattern(movePattern);
+    newParticle->setDeathTime(deathTime);
+    newParticle->setFriction(frictionValue);
+    newParticle->setTextValue(textValue, fontValue);
+    newParticle->setColor(colorValue);
+    addParticleToList(move(newParticle));
 }
 
 void LivingZombie::update(){

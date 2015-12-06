@@ -53,12 +53,18 @@ void EntityParticle::setTextValue(std::string textValue, int fontValue){
     this->particleText = textValue;
     this->particleIsText = true;
     this->particleFont = fontValue;
+    this->height = al_get_font_line_height(this->getFont());
+    this->width = al_get_text_width(this->getFont(), textValue.c_str());
 }
 void EntityParticle::setColor(ALLEGRO_COLOR colorValue){
     this->particleColor = colorValue;
 }
 
 void EntityParticle::update(){
+    if(this->particleTimeAlive >= this->particleDeathTime){
+        this->setActive(false);
+    }
+
     setAngle(-atan2(this->getCenterPosition()[0] - playerList[0]->getCenterPosition()[0], this->getCenterPosition()[1] - playerList[0]->getCenterPosition()[1]));
     this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
     double deltaX_l = this->getDelta()[0], deltaY_l = this->getDelta()[1];
@@ -76,8 +82,6 @@ void EntityParticle::update(){
     }
 
     this->updateCenter();
-
-    this->updateAnimation();
 
     this->setDeltaX(0);
     this->setDeltaY(0);

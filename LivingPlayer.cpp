@@ -57,8 +57,8 @@ void LivingPlayer::clearInventory(){
     fill(this->inventoryItemIDs.begin(), this->inventoryItemIDs.end(), -1);
 }
 
-void LivingPlayer::takeDamage(double damage){
-
+void LivingPlayer::takeDamage(double damage, bool crit){
+    //Player damage
 }
 
 void LivingPlayer::fireWeapon(){
@@ -144,14 +144,10 @@ void LivingPlayer::update(){
 
         if(!colX){
             this->posX += deltaX_l/loopI;
-        }else{
-
         }
 
         if(!colY){
             this->posY += deltaY_l/loopI;
-        }else{
-
         }
     }
 

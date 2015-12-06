@@ -8,7 +8,7 @@ class LivingZombie : public LivingEntity{
         LivingZombie();
         void update();
         void draw();
-        void takeDamage(double damage);
+        void takeDamage(double damage, bool crit);
 
     protected:
     private:
