@@ -127,7 +127,7 @@ extern ALLEGRO_TIMER *timer;
 
 extern double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 extern int tileSize;
-extern int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES;
+extern int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_TREEOBJECTS, MAX_TREELEVELS;
 extern double FPS, ticksPerSecond;
 
 extern vector<unique_ptr<Button>> buttonList;

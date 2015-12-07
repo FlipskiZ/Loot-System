@@ -36,6 +36,8 @@
 		</Compiler>
 		<Unit filename="Button.cpp" />
 		<Unit filename="Button.h" />
+		<Unit filename="CollisionDetection.cpp" />
+		<Unit filename="CollisionDetection.h" />
 		<Unit filename="Engine.cpp" />
 		<Unit filename="Engine.h" />
 		<Unit filename="Entity.cpp" />

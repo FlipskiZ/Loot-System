@@ -53,9 +53,8 @@ Engine engine;
 
 double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 int tileSize;
-int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES;
+int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_TREEOBJECTS, MAX_TREELEVELS;
 double FPS, ticksPerSecond;
-
 vector<vector<int> > mapArray;
 
 const char* versionNumber;
@@ -193,7 +192,7 @@ string dtos(double arg){
 
 void loadConfig(){
     screenWidth = 1280, screenHeight = 720, mapDisplayWidth = 1280, mapDisplayHeight = 640, mapArrayWidth = 40, mapArrayHeight = 20, tileSize = 32;
-    MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000;
+    MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000, MAX_TREEOBJECTS = 10, MAX_TREELEVELS = 5;
     FPS = 60, ticksPerSecond = 64;
 
     string desc;
