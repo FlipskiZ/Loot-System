@@ -12,9 +12,9 @@ class EntityParticle : public Entity{
         EntityParticle();
         void update();
         void draw();
+        void updateMovePatternDelta();
 
         int getMovePattern();
-        std::vector<double> getMovePatternMovement();
         double getTimeAlive();
         double getDeathTime();
         double getFriction();
@@ -25,6 +25,7 @@ class EntityParticle : public Entity{
         void setMovePattern(int movePattern);
         void setDeathTime(double deathTime);
         void setFriction(double frictionValue);
+        void setGravity(double gravity);
         void setTextValue(std::string textValue, int fontValue);
         void setColor(ALLEGRO_COLOR colorValue);
     protected:
@@ -32,10 +33,12 @@ class EntityParticle : public Entity{
         int particleMovePattern;
         double particleDeathTime, particleTimeAlive;
         double particleFriction;
+        double particleGravity;
         bool particleIsText;
         std::string particleText;
         int particleFont;
         ALLEGRO_COLOR particleColor;
+        double particleFrictionRatio;
 };
 
 #endif // ENTITYPARTICLE_H

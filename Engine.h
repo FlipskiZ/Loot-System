@@ -24,6 +24,7 @@
 
 #include "Button.h"
 #include "LootSystem.h"
+#include "CollisionDetection.h"
 
 #include "LivingPlayer.h"
 #include "LivingZombie.h"
@@ -82,8 +83,7 @@ enum particlePatterns{
     patternHomeToPlayer = 0,
     patternHomeToMouse,
     patternKeepMomentum,
-    patternJumpUp,
-    patternJumpUpGravity,
+    patternGravity,
 };
 
 string itos(int arg); //converts an integer to a std::string
@@ -127,7 +127,7 @@ extern ALLEGRO_TIMER *timer;
 
 extern double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 extern int tileSize;
-extern int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_TREEOBJECTS, MAX_TREELEVELS;
+extern int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_TREE_OBJECTS, MAX_TREE_LEVELS;
 extern double FPS, ticksPerSecond;
 
 extern vector<unique_ptr<Button>> buttonList;
@@ -136,6 +136,10 @@ extern vector<unique_ptr<LivingEntity>> livingList;
 extern vector<unique_ptr<EntityParticle>> particleList;
 extern vector<unique_ptr<Item>> itemList;
 extern vector<unique_ptr<MissileEntity>> missileList;
+
+extern unique_ptr<CollisionDetection> collisionDetection;
+
+extern int collisionsC;
 
 extern const char* versionNumber;
 extern double fpsTimeNew, fpsCounter, fpsTimeOld;

@@ -34,6 +34,10 @@ void PlayState::init(){
     for(int i = 0; i < missileList.size(); i++){
         missileList[i] = NULL;
     }
+    for(int i = 0; i < livingList.size(); i++){
+        livingList[i] = NULL;
+    }
+    collisionDetection = unique_ptr<CollisionDetection>(new CollisionDetection(0, 0, 0, mapArrayWidth*tileSize, mapArrayHeight*tileSize)); //Level, PosX, PosY, Width, Height
     lootSystem.createWeapon(1);
     playerList[0]->equipWeapon(0);
 
@@ -52,6 +56,12 @@ void PlayState::resume(){
 }
 
 void PlayState::update(Engine* engine){
+    collisionDetection->clearNode();
+    for(int i = 0; i < livingList.size(); i++){
+        if(livingList[i] != NULL && livingList[i]->getActive()){
+            collisionDetection->insertObjectInNode(i);
+        }
+    }
 
     //Player Input +
     double movementSpeedP = playerList[0]->getMovementSpeed();
@@ -107,6 +117,7 @@ void PlayState::update(Engine* engine){
     }
 
     if(al_key_down(&keyState, ALLEGRO_KEY_G)){
+        if(lastKeyPress != ALLEGRO_KEY_G){
         double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
         double maxHP = randInt(enemyLevel, enemyLevel*10);
         unique_ptr<LivingZombie> newZombie(new LivingZombie());
@@ -118,6 +129,9 @@ void PlayState::update(Engine* engine){
         newZombie->setAnimationSpeed(animationSpeed);
         newZombie->setBitmap(zombieImage);
         addZombieToList(move(newZombie));
+
+        lastKeyPress = ALLEGRO_KEY_G;
+        }
     }
 
     if(al_key_down(&keyState, ALLEGRO_KEY_F5)){
@@ -187,7 +201,6 @@ void PlayState::update(Engine* engine){
     //Rest +
 
     //Rest -
-
 }
 
 void PlayState::draw(Engine* engine){
@@ -230,4 +243,6 @@ void PlayState::draw(Engine* engine){
     fpsTimeOld = fpsTimeNew;
     al_draw_textf(defaultFont, (fpsCounter > 55) ? al_map_rgb(50, 150, 50) : (fpsCounter <= 55 && fpsCounter > 30) ? al_map_rgb(150, 150, 50) : al_map_rgb(150, 50, 50), screenWidth-95, mapDisplayHeight, NULL, "FPS: %d", (int)round(fpsCounter));
     al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+25, ALLEGRO_ALIGN_RIGHT, "Enemy Level: %d", enemyLevel);
+
+    collisionDetection->draw();
 }

@@ -6,30 +6,11 @@ EntityParticle::EntityParticle(){
     this->particleDeathTime = 0, this->particleTimeAlive = 0;
     this->particleText = "";
     this->particleIsText = false;
+    this->particleFrictionRatio = 0;
 }
 
 int EntityParticle::getMovePattern(){
     return this->particleMovePattern;
-}
-vector<double> EntityParticle::getMovePatternMovement(){
-    /*patternHomeToPlayer = 0,
-    patternHomeToMouse,
-    patternKeepMomentum,
-    patternJumpUp,
-    patternJumpUpGravity,*/
-    vector<double> deltaV;
-    switch(this->particleMovePattern){
-        case patternHomeToPlayer:
-            break;
-        case patternHomeToMouse:
-            break;
-        case patternKeepMomentum:
-            break;
-        case patternJumpUp:
-            break;
-        case patternJumpUpGravity:
-            break;
-    }
 }
 double EntityParticle::getTimeAlive(){
     return this->particleTimeAlive;
@@ -69,6 +50,9 @@ void EntityParticle::setDeathTime(double deathTime){
 void EntityParticle::setFriction(double frictionValue){
     this->particleFriction = frictionValue;
 }
+void EntityParticle::setGravity(double gravity){
+    this->particleGravity = gravity;
+}
 void EntityParticle::setTextValue(std::string textValue, int fontValue){
     this->particleText = textValue;
     this->particleIsText = true;
@@ -80,13 +64,39 @@ void EntityParticle::setColor(ALLEGRO_COLOR colorValue){
     this->particleColor = colorValue;
 }
 
+void EntityParticle::updateMovePatternDelta(){
+    /*patternHomeToPlayer = 0,
+    patternHomeToMouse,
+    patternKeepMomentum,
+    patternJumpUp,
+    patternJumpUpGravity,*/
+    double deltaX_l = this->getDelta(0)/deltaTime, deltaY_l = this->getDelta(1)/deltaTime;
+    switch(this->particleMovePattern){
+        case patternHomeToPlayer:
+            setAngle(-atan2(this->getCenterPosition(0) - playerList[0]->getCenterPosition(0), this->getCenterPosition(1) - playerList[0]->getCenterPosition(1)));
+            this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
+            break;
+        case patternHomeToMouse:
+            setAngle(-atan2(this->getCenterPosition(0) - mouseX, this->getCenterPosition(1) - mouseY));
+            this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
+            break;
+        case patternKeepMomentum:
+            this->setDeltaX(deltaX_l*this->particleFrictionRatio), this->setDeltaY(deltaY_l*this->particleFrictionRatio);
+            break;
+        case patternGravity:
+            this->setDeltaX(deltaX_l*this->particleFrictionRatio), this->setDeltaY(deltaY_l*this->particleFrictionRatio+this->particleGravity);
+            break;
+    }
+}
 void EntityParticle::update(){
     if(this->particleTimeAlive >= this->particleDeathTime){
         this->setActive(false);
     }
 
-    setAngle(-atan2(this->getCenterPosition(0) - playerList[0]->getCenterPosition(0), this->getCenterPosition(1) - playerList[0]->getCenterPosition(1)));
-    this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
+    particleFrictionRatio = 1 / (1 + this->particleFriction * deltaTime);
+
+    this->updateMovePatternDelta();
+
     double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
 
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
@@ -102,9 +112,6 @@ void EntityParticle::update(){
     }
 
     this->updateCenter();
-
-    this->setDeltaX(0);
-    this->setDeltaY(0);
 
     this->particleTimeAlive += deltaTime;
 }

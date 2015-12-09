@@ -49,11 +49,13 @@ vector<unique_ptr<EntityParticle>> particleList;
 vector<unique_ptr<Item>> itemList;
 vector<unique_ptr<MissileEntity>> missileList;
 
+unique_ptr<CollisionDetection> collisionDetection;
+
 Engine engine;
 
 double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 int tileSize;
-int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_TREEOBJECTS, MAX_TREELEVELS;
+int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_TREE_OBJECTS, MAX_TREE_LEVELS;
 double FPS, ticksPerSecond;
 vector<vector<int> > mapArray;
 
@@ -116,8 +118,9 @@ int main(){
             if(events.timer.source == timer){
                 newTime = al_get_time();
                 frameTime = newTime - currentTime;
-                if(frameTime > 0.25)
+                if(frameTime > 0.25){
                     frameTime = 0.25;	  // note: max frame time to avoid spiral of death
+                }
                 currentTime = newTime;
 
                 accumulator += frameTime;
@@ -192,7 +195,7 @@ string dtos(double arg){
 
 void loadConfig(){
     screenWidth = 1280, screenHeight = 720, mapDisplayWidth = 1280, mapDisplayHeight = 640, mapArrayWidth = 40, mapArrayHeight = 20, tileSize = 32;
-    MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000, MAX_TREEOBJECTS = 10, MAX_TREELEVELS = 5;
+    MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000, MAX_TREE_OBJECTS = 5, MAX_TREE_LEVELS = 5;
     FPS = 60, ticksPerSecond = 64;
 
     string desc;

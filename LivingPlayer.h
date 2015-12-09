@@ -34,6 +34,8 @@ class LivingPlayer : public LivingEntity{
         int playerLevel, equippedWeapon;
 
         double fireRateHelper;
+
+        std::vector<int> livingCollisions;
 };
 
 #endif // PLAYER_H

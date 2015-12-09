@@ -119,16 +119,20 @@ void LivingPlayer::update(){
 
     bool colX = false, colY = false;
 
+    this->livingCollisions.clear();
+
+    collisionDetection->getPotentialCollisions(this->livingCollisions, this->posX, this->posY, this->width, this->height);
+
     for(double i = 0; i < loopI; i++){
         colX = false, colY = false;
-        for(int j = 0; j < livingList.size() && (!colX || !colY); j++){
-            if(livingList[j] != NULL && livingList[j]->getActive()){
-                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[j]->getPosition(0), livingList[j]->getPosition(1),
-                    this->width, this->height, livingList[j]->getDimension(0), livingList[j]->getDimension(1))){
+        for(int j = 0; j < livingCollisions.size() && (!colX || !colY); j++){
+            if(livingList[livingCollisions[j]] != NULL && livingList[livingCollisions[j]]->getActive()){
+                if(checkCollision(this->posX + deltaX_l/loopI, this->posY, livingList[livingCollisions[j]]->getPosition(0), livingList[livingCollisions[j]]->getPosition(1),
+                    this->width, this->height, livingList[livingCollisions[j]]->getDimension(0), livingList[livingCollisions[j]]->getDimension(1))){
                     colX = true;
                 }
-                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[j]->getPosition(0), livingList[j]->getPosition(1),
-                    this->width, this->height, livingList[j]->getDimension(0), livingList[j]->getDimension(1))){
+                if(checkCollision(this->posX, this->posY + deltaY_l/loopI, livingList[livingCollisions[j]]->getPosition(0), livingList[livingCollisions[j]]->getPosition(1),
+                    this->width, this->height, livingList[livingCollisions[j]]->getDimension(0), livingList[livingCollisions[j]]->getDimension(1))){
                     colY = true;
                 }
             }

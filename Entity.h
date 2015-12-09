@@ -28,7 +28,9 @@ class Entity{
         void setDimensions(double width, double height);
         void setMovementSpeed(double movementSpeed);
         void setDeltaX(double deltaX);
+        void setDeltaX(double deltaX, double angle);
         void setDeltaY(double deltaY);
+        void setDeltaY(double deltaY, double angle);
         void setEntityId(int entityId);
         void setTypeId(int entityId);
         void setAngle(double angle);

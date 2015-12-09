@@ -77,8 +77,14 @@ void Entity::setMovementSpeed(double movementSpeed){
 void Entity::setDeltaX(double deltaX){
     this->deltaX = deltaX*deltaTime;
 }
+void Entity::setDeltaX(double deltaX, double angle){
+    this->deltaX = deltaX*sin(angle)*deltaTime;
+}
 void Entity::setDeltaY(double deltaY){
     this->deltaY = deltaY*deltaTime;
+}
+void Entity::setDeltaY(double deltaY, double angle){
+    this->deltaY = deltaY*-cos(angle)*deltaTime;
 }
 void Entity::setEntityId(int entityId){
     this->entityId = entityId;
