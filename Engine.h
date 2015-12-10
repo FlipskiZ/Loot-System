@@ -86,6 +86,18 @@ enum particlePatterns{
     patternGravity,
 };
 
+enum entityDebuffs{
+    debuffBurning = 0,
+    debuffPoison,
+    debuffElectrified,
+    debuffSlowed,
+    AMOUNT_DEBUFFS,
+};
+
+enum buffs{
+
+};
+
 string itos(int arg); //converts an integer to a std::string
 string dtos(double arg); //converts an float to a std::string
 bool isPassable(double x, double y, double width, double height);

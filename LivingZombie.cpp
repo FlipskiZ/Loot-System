@@ -8,8 +8,16 @@ LivingZombie::LivingZombie(){
 void LivingZombie::takeDamage(double damage, bool crit){
     double movementSpeed = 160, deathTime = 0.6, frictionValue = 2, gravityValue = 5, angle = randDouble(-45, 45)*toRadians;
     int movePattern = patternGravity, fontValue = 0;
-    string textValue = dtos(damage);
+    bool collidesWithMap = false;
+    string textValue = dtos(round(damage*100)/100);
+    textValue.insert(textValue.begin(), '-');
     ALLEGRO_COLOR colorValue = al_map_rgb(255, 50, 50);
+
+    if(crit){
+        deathTime *= 2;
+        gravityValue /= 2;
+        fontValue = 1;
+    }
 
     unique_ptr<EntityParticle> newParticle(new EntityParticle);
     newParticle->setPos(this->centerX, this->posY);
@@ -19,6 +27,7 @@ void LivingZombie::takeDamage(double damage, bool crit){
     newParticle->setDeathTime(deathTime);
     newParticle->setFriction(frictionValue);
     newParticle->setGravity(gravityValue);
+    newParticle->setCollidesWithMap(collidesWithMap);
     newParticle->setTextValue(textValue, fontValue);
     newParticle->setColor(colorValue);
     addParticleToList(move(newParticle));
@@ -30,7 +39,67 @@ void LivingZombie::takeDamage(double damage, bool crit){
     }
 }
 
+void LivingZombie::takeDebuffDamage(double damage, int debuffID){
+    if(debuffID == debuffElectrified){
+        double movementSpeed = 160, deathTime = 0.6, frictionValue = 2, gravityValue = 5, angle = randDouble(-45, 45)*toRadians;
+        int movePattern = patternGravity, fontValue = 0;
+        bool collidesWithMap = false;
+        string textValue = dtos(round(damage*100)/100);
+        textValue.insert(textValue.begin(), '-');
+        ALLEGRO_COLOR colorValue = al_map_rgb(50, 225, 255);
+
+        unique_ptr<EntityParticle> newParticle(new EntityParticle);
+        newParticle->setPos(this->centerX, this->posY);
+        newParticle->setMovementSpeed(movementSpeed);
+        newParticle->setMovePattern(movePattern);
+        newParticle->setDeltaX(movementSpeed, angle), newParticle->setDeltaY(movementSpeed, angle);
+        newParticle->setDeathTime(deathTime);
+        newParticle->setFriction(frictionValue);
+        newParticle->setGravity(gravityValue);
+        newParticle->setCollidesWithMap(collidesWithMap);
+        newParticle->setTextValue(textValue, fontValue);
+        newParticle->setColor(colorValue);
+        addParticleToList(move(newParticle));
+    }
+
+    this->livingHP -= damage;
+
+    if(this->livingHP <= 0){
+        this->setActive(false);
+    }
+}
+
+void LivingZombie::healHP(double health){
+    double movementSpeed = 160, deathTime = 0.6, frictionValue = 2, gravityValue = 5, angle = randDouble(-45, 45)*toRadians;
+    int movePattern = patternGravity, fontValue = 0;
+    bool collidesWithMap = false;
+    string textValue = dtos(round(health*100)/100);
+    textValue.insert(textValue.begin(), '+');
+    ALLEGRO_COLOR colorValue = al_map_rgb(50, 255, 50);
+
+    unique_ptr<EntityParticle> newParticle(new EntityParticle);
+    newParticle->setPos(this->centerX, this->posY);
+    newParticle->setMovementSpeed(movementSpeed);
+    newParticle->setMovePattern(movePattern);
+    newParticle->setDeltaX(movementSpeed, angle), newParticle->setDeltaY(movementSpeed, angle);
+    newParticle->setDeathTime(deathTime);
+    newParticle->setFriction(frictionValue);
+    newParticle->setGravity(gravityValue);
+    newParticle->setCollidesWithMap(collidesWithMap);
+    newParticle->setTextValue(textValue, fontValue);
+    newParticle->setColor(colorValue);
+    addParticleToList(move(newParticle));
+
+    this->livingHP += health;
+    if(this->livingHP > this->livingMaxHP){
+        this->livingHP = this->livingMaxHP;
+    }
+}
+
 void LivingZombie::update(){
+
+    this->updateDebuffs();
+
     setAngle(-atan2(this->getCenterPosition(0) - playerList[0]->getCenterPosition(0), this->getCenterPosition(1) - playerList[0]->getCenterPosition(1)));
     this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
     double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
@@ -98,6 +167,8 @@ void LivingZombie::update(){
 
     this->setDeltaX(0);
     this->setDeltaY(0);
+
+    this->timeAlive += deltaTime; ///SHOW DEBUFF DAMAGE VALUES EVERY SECOND
 }
 
 void LivingZombie::draw(){

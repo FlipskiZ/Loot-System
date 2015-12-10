@@ -9,6 +9,8 @@ class LivingZombie : public LivingEntity{
         void update();
         void draw();
         void takeDamage(double damage, bool crit);
+        void takeDebuffDamage(double damage, int debuffID);
+        void healHP(double health);
 
         std::vector<int> livingCollisions;
     protected:

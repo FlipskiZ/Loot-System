@@ -12,6 +12,8 @@ class LivingPlayer : public LivingEntity{
         void draw();
         void fireWeapon();
         void takeDamage(double damage, bool crit);
+        void takeDebuffDamage(double damage, int debuffID);
+        void healHP(double health);
 
         int getMaxInventorySpace(){return this->maxInventorySpace;}
         int getInventoryItem(int pos){return this->inventoryItemIDs[pos];}

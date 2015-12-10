@@ -29,22 +29,22 @@ class MissileBullet : public MissileEntity{
         double fireRate; //check
         double shotSpeed; //check
         double accuracy; //check
-        double critChance;
-        double critStrength;
+        double critChance; //check
+        double critStrength; //check
         double armorPenetration;*/
 
         std::vector<double> bulletSpecials;
-        /*double fireStrength; //Burning
-        double poisionStrength; //Poison
-        double electricStrength; //Lightning. Bounces to closest target, losing a percentage of power depending on the distance
+        /*double fireStrength; //Burning. Damage over time
+        double poisionStrength; //Poison. Damage over time
+        double electricStrength; //Lightning. Paralyze the enemy
         double slowStrenght; //Slowness amount. Decreases by a constant amount over time
         double additionalBullets; //Additional bullets in a 45 degree spread                    //check
         double explosionRadius; //Decreases in damage the further out from center the target is //check
         double bulletSplit; //Splits after a short while                                        //check
         double ricochetAmount; //Bounces off of walls                                           //check
         double homingForce; //Depends on ease of implementation. Homes on closest enemy
-        double vampirism; //Steals a percentage of the base damage dealt every bullet hit
-        double executionTreshold; //Instant kill at health percantage
+        double vampirism; //Steals a percentage of the base damage dealt every bullet hit       //check
+        double executionTreshold; //Instant kill at health percantage                           //check
         double penetrationAmount; //Amount of times the bullet can penetrate enemies*/          //check
 
         double rangeBeforeSplit, rangeBeforeSplitHelper;

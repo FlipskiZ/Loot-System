@@ -132,25 +132,25 @@ double LootSystem::getRandSpecialStrength(int special, int level){
         case weaponPoisionStrength:
             return randDouble(this->weaponStats[weaponMinDamage], this->weaponStats[weaponMaxDamage])/3; break;
         case weaponElectricStrength:
-            return randDouble(this->weaponStats[weaponMinDamage], this->weaponStats[weaponMaxDamage])/3; break;
+            return randDouble(this->weaponStats[weaponMinDamage], this->weaponStats[weaponMaxDamage])/5; break; //Electric deals the ful damage instantly, so it gets a bit less strength
         case weaponSlowStrenght:
-            return randDouble(level/(100.0/0.5), 0.5+level/(100.0/0.5)); break;
+            return randDouble(level/(100.0/0.5), 0.5+level/(100.0/0.5)); break; //From 0 to 1 - 0.5 variable by level
         case weaponAdditionalBullets:
-            return randDouble(1+level/20, 3+level/20); break;
+            return randDouble(1+level/20, 3+level/20); break; //from 1 to 8 - 5 variable
         case weaponExplosionRadius:
-            return randDouble(16+level/2, 32+level*2); break;
+            return randDouble(16+level/2, 32+level*2); break; //from 16 to 232 - 200 variable
         case weaponBulletSplit:
-            return randDouble(1+level/20, 3+level/20); break;
+            return randDouble(1+level/20, 3+level/20); break; //1 to 8 - 5 variable
         case weaponRicochetAmount:
-            return randDouble(1+level/20, 3+level/20); break;
+            return randDouble(1+level/20, 3+level/20); break; //1 to 8 - 5 variable
         case weaponHomingForce:
-            return randDouble(0.1+level/(100.0/0.6), 0.4+level/(100.0/0.6)); break;
+            return randDouble(0.1+level/(100.0/0.6), 0.4+level/(100.0/0.6)); break; //0.1 to 1 - 0.6 variable
         case weaponVampirism:
-            return randDouble(0.005, 0.025); break; //This will already scale with the damage, this will probably be one of the strongest specials. So we leave this at a constant range.
+            return randDouble(0.01, 0.03); break; //This will already scale with the damage, this is probably one of the strongest specials. So we leave this at a constant range and low percentage.
         case weaponExecutionTreshold:
-            return randDouble(0.1, 0.3); break; //Same thing as Vampirism
+            return randDouble(0.2, 0.5); break; //Same thing as Vampirism
         case weaponPenetrationAmount:
-            return randDouble(1+level/20, 3+level/20); break;
+            return randDouble(1+level/20, 3+level/20); break; //1 to 8 - 5 variable
     }
     return 0;
 }

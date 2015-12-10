@@ -99,7 +99,7 @@ void ItemWeapon::draw(){
                     case weaponHomingForce:
                         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-(80-specialsDrawn*15), 0, "Homing Force: %.2f%%", this->weaponSpecials[weaponHomingForce]*100); break;
                     case weaponVampirism:
-                        al_draw_textf(smallFont, rarityColor, mouseX, mouseY-(80-specialsDrawn*15), 0, "HP Healed Of %% Dealt Damage: %.2f", this->weaponSpecials[weaponVampirism]*100); break;
+                        al_draw_textf(smallFont, rarityColor, mouseX, mouseY-(80-specialsDrawn*15), 0, "Vampirism: %.2f%%", this->weaponSpecials[weaponVampirism]*100); break;
                     case weaponExecutionTreshold:
                         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-(80-specialsDrawn*15), 0, "Execution Treshold: %.2f%%", this->weaponSpecials[weaponExecutionTreshold]*100); break;
                     case weaponPenetrationAmount:

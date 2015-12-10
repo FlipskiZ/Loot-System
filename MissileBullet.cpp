@@ -92,16 +92,50 @@ void MissileBullet::update(){
             }
         }
 
-        vector<int>::iterator iteratorPenetrated;
+        double damage;
+        bool crit;
+
         for(int i = 0; i < this->loopPenetratedEnemies.size(); i++){
             for(int j = 0; j < this->penetratedEnemies.size(); j++){
-                iteratorPenetrated = find(this->penetratedEnemies.begin(), this->penetratedEnemies.end(), this->loopPenetratedEnemies[i]);
-                if(iteratorPenetrated == this->penetratedEnemies.end()){
+                if(find(this->penetratedEnemies.begin(), this->penetratedEnemies.end(), this->loopPenetratedEnemies[i]) == this->penetratedEnemies.end()){
                     this->penetratedEnemies.erase(this->penetratedEnemies.begin()+j);
                 }
             }
+
+            damage = randDouble(this->bulletStats[weaponMinDamage], this->bulletStats[weaponMaxDamage]);
+            crit = false;
+
+            if(randDouble() < this->bulletStats[weaponCritChance]){
+                damage *= this->bulletStats[weaponCritStrength];
+                crit = true;
+            }
+
+            if(this->bulletSpecials[weaponExecutionTreshold] > 0){
+                if(livingList[loopPenetratedEnemies[i]]->getCurrentHP() < livingList[loopPenetratedEnemies[i]]->getMaxHP()*this->bulletSpecials[weaponExecutionTreshold]){
+                    damage = livingList[loopPenetratedEnemies[i]]->getCurrentHP();
+                    crit = true;
+                }
+            }
+
+            if(this->bulletSpecials[weaponVampirism] > 0){
+                playerList[0]->healHP(damage*this->bulletSpecials[weaponVampirism]);
+            }
+
+            if(this->bulletSpecials[weaponFireStrength] > 0){
+                livingList[loopPenetratedEnemies[i]]->addDebuff(debuffBurning, this->bulletSpecials[weaponFireStrength], 2.5); //Full damage over the course of one second
+            }
+            if(this->bulletSpecials[weaponPoisionStrength] > 0){
+                livingList[loopPenetratedEnemies[i]]->addDebuff(debuffPoison, this->bulletSpecials[weaponPoisionStrength]/1.5, 5); //Takes twice as long to deal complete damage, but dealts 50% more damage.
+            }
+            if(this->bulletSpecials[weaponElectricStrength] > 0){
+                livingList[loopPenetratedEnemies[i]]->addDebuff(debuffElectrified, this->bulletSpecials[weaponElectricStrength], 1); //Electric is instantly deal the full damage
+            }
+            if(this->bulletSpecials[weaponSlowStrenght] > 0){
+                livingList[loopPenetratedEnemies[i]]->addDebuff(debuffSlowed, this->bulletSpecials[weaponSlowStrenght], 0.75); //Slowness lasts 0.75 seconds.
+            }
+
             //Damage Enemy
-            livingList[loopPenetratedEnemies[i]]->takeDamage(randDouble(this->bulletStats[weaponMinDamage], this->bulletStats[weaponMaxDamage]), false);
+            livingList[loopPenetratedEnemies[i]]->takeDamage(damage, crit);
         }
 
         if(!isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
@@ -126,6 +160,7 @@ void MissileBullet::update(){
                     this->explode = true;
                 }else{
                     this->setActive(false);
+                    return;
                 }
             }
         }
@@ -142,6 +177,7 @@ void MissileBullet::update(){
                 this->explode = true;
             }else{
                 this->setActive(false);
+                return;
             }
         }
 
@@ -150,6 +186,7 @@ void MissileBullet::update(){
                 this->explode = true;
             }else{
                 this->setActive(false);
+                return;
             }
         }
 
@@ -221,6 +258,10 @@ void MissileBullet::update(){
 
                     damage = randDouble(this->bulletStats[weaponMinDamage]-(distance*this->bulletStats[weaponMinDamage]/pRadius),
                             this->bulletStats[weaponMaxDamage]-(distance*this->bulletStats[weaponMaxDamage]/pRadius));
+
+                    if(damage < 0){
+                        damage = 0;
+                    }
 
                     livingList[livingCollisions[j]]->takeDamage(damage, false);
                 }

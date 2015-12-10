@@ -21,6 +21,9 @@ double EntityParticle::getDeathTime(){
 double EntityParticle::getFriction(){
     return this->particleFriction;
 }
+bool EntityParticle::getCollidesWithMap(){
+    return this->particleCollidesWithMap;
+}
 std::string EntityParticle::getShowText(){
     return this->particleText;
 }
@@ -52,6 +55,9 @@ void EntityParticle::setFriction(double frictionValue){
 }
 void EntityParticle::setGravity(double gravity){
     this->particleGravity = gravity;
+}
+void EntityParticle::setCollidesWithMap(bool collides){
+    this->particleCollidesWithMap = collides;
 }
 void EntityParticle::setTextValue(std::string textValue, int fontValue){
     this->particleText = textValue;
@@ -100,13 +106,23 @@ void EntityParticle::update(){
     double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
 
     double loopI = ceil(this->movementSpeed*deltaTime/this->width);
+    bool colX, colY;
 
     for(double i = 0; i < loopI; i++){
-        if(isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
+        colX = false, colY = false;
+        if(this->particleCollidesWithMap){
+            if(!isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
+                colX = true;
+            }
+
+            if(!isPassable(this->posX, this->posY + deltaY_l/loopI , this->width, this->height)){
+                colY = true;
+            }
+        }
+        if(!colX){
             this->posX += deltaX_l/loopI;
         }
-
-        if(isPassable(this->posX, this->posY + deltaY_l/loopI , this->width, this->height)){
+        if(!colY){
             this->posY += deltaY_l/loopI;
         }
     }

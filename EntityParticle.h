@@ -18,6 +18,7 @@ class EntityParticle : public Entity{
         double getTimeAlive();
         double getDeathTime();
         double getFriction();
+        bool getCollidesWithMap();
         std::string getShowText();
         ALLEGRO_FONT *getFont();
         ALLEGRO_COLOR getColor();
@@ -26,6 +27,7 @@ class EntityParticle : public Entity{
         void setDeathTime(double deathTime);
         void setFriction(double frictionValue);
         void setGravity(double gravity);
+        void setCollidesWithMap(bool collides);
         void setTextValue(std::string textValue, int fontValue);
         void setColor(ALLEGRO_COLOR colorValue);
     protected:
@@ -34,6 +36,7 @@ class EntityParticle : public Entity{
         double particleDeathTime, particleTimeAlive;
         double particleFriction;
         double particleGravity;
+        bool particleCollidesWithMap;
         bool particleIsText;
         std::string particleText;
         int particleFont;
