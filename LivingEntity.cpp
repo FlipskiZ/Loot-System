@@ -14,6 +14,9 @@ double LivingEntity::getCurrentHP(){
 double LivingEntity::getMaxHP(){
     return this->livingMaxHP;
 }
+double LivingEntity::getArmor(){
+    return this->livingArmor;
+}
 vector<vector<double>> LivingEntity::getDebuffs(){
     return this->livingDebuffs;
 }
@@ -25,10 +28,18 @@ void LivingEntity::setMaxHP(double maxHP){
 void LivingEntity::setCurrentHP(double currentHP){
     this->livingHP = currentHP;
 }
+void LivingEntity::setArmor(double armor){
+    this->livingArmor = armor;
+}
 void LivingEntity::addDebuff(int debuffID, double debuffStrength, double debuffDuration){
     this->livingDebuffs[debuffID].clear();
     this->livingDebuffs[debuffID].push_back(debuffStrength);
     this->livingDebuffs[debuffID].push_back(debuffDuration);
+    this->livingDebuffs[debuffID].push_back(al_get_time());
+
+    if(debuffID == debuffElectrified){
+        this->takeDebuffDamage(this->livingDebuffs[debuffID][0], debuffID);
+    }
 }
 void LivingEntity::removeDebuff(int debuffID){
     this->livingDebuffs[debuffID].clear();
@@ -38,6 +49,7 @@ void LivingEntity::removeDebuff(int debuffID){
         case debuffPoison:
             break;
         case debuffElectrified:
+            this->movementSpeed = this->maxMovementSpeed;
             break;
         case debuffSlowed:
             this->movementSpeed = this->maxMovementSpeed;
@@ -50,14 +62,17 @@ void LivingEntity::updateDebuffs(){
         if(!this->livingDebuffs[i].empty()){
             switch(i){
                 case debuffBurning:
-                    this->takeDebuffDamage(this->livingDebuffs[i][0]*deltaTime, i);
+                    if(fmod(abs(this->livingDebuffs[i][2]-this->timeAlive), 0.5) <= deltaTime){ //twice as fast as poison
+                        this->takeDebuffDamage(this->livingDebuffs[i][0]*0.5, i);
+                    }
                     break;
                 case debuffPoison:
-                    this->takeDebuffDamage(this->livingDebuffs[i][0]*deltaTime, i);
+                    if(fmod(abs(this->livingDebuffs[i][2]-this->timeAlive), 1) <= deltaTime){ //Once a second
+                        this->takeDebuffDamage(this->livingDebuffs[i][0], i);
+                    }
                     break;
                 case debuffElectrified:
-                    this->takeDebuffDamage(this->livingDebuffs[i][0], i);
-                    this->removeDebuff(i);
+                    this->movementSpeed = 0;
                     break;
                 case debuffSlowed:
                     this->movementSpeed = this->maxMovementSpeed*(1-this->livingDebuffs[i][0]);

@@ -196,7 +196,7 @@ string dtos(double arg){
 void loadConfig(){
     screenWidth = 1280, screenHeight = 720, mapDisplayWidth = 1280, mapDisplayHeight = 640, mapArrayWidth = 40, mapArrayHeight = 20, tileSize = 32;
     MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000, MAX_TREE_OBJECTS = 5, MAX_TREE_LEVELS = 5;
-    FPS = 60, ticksPerSecond = 64;
+    FPS = 60, ticksPerSecond = 60;
 
     string desc;
 
@@ -215,9 +215,14 @@ void loadConfig(){
         configFile << "mapArrayHeight "     << mapArrayHeight << endl;
         configFile << "tileSize "           << tileSize << endl;
         configFile << "FPS "                << FPS << endl;
-        configFile << "ticksPerSecond "     << ticksPerSecond << endl;
         configFile << "MAX_BUTTONS "        << MAX_BUTTONS << endl;
         configFile << "MAX_PLAYERS "        << MAX_PLAYERS << endl;
+        configFile << "MAX_ITEMS "          << MAX_ITEMS << endl;
+        configFile << "MAX_MISSILES "       << MAX_MISSILES << endl;
+        configFile << "MAX_LIVING "         << MAX_LIVING << endl;
+        configFile << "MAX_PARTICLES "      << MAX_PARTICLES << endl;
+        configFile << "MAX_TREE_OBJECTS "   << MAX_TREE_OBJECTS << endl;
+        configFile << "MAX_TREE_LEVELS "    << MAX_TREE_LEVELS << endl;
     }else{
         configFile >> desc >> screenWidth;
         configFile >> desc >> screenHeight;
@@ -227,9 +232,15 @@ void loadConfig(){
         configFile >> desc >> mapArrayHeight;
         configFile >> desc >> tileSize;
         configFile >> desc >> FPS;
-        configFile >> desc >> ticksPerSecond;
+        ticksPerSecond = FPS;
         configFile >> desc >> MAX_BUTTONS;
         configFile >> desc >> MAX_PLAYERS;
+        configFile >> desc >> MAX_ITEMS;
+        configFile >> desc >> MAX_MISSILES;
+        configFile >> desc >> MAX_LIVING;
+        configFile >> desc >> MAX_PARTICLES;
+        configFile >> desc >> MAX_TREE_OBJECTS;
+        configFile >> desc >> MAX_TREE_LEVELS;
     }
 
     mapArray.resize(mapArrayWidth);

@@ -128,14 +128,14 @@ void MissileBullet::update(){
                 livingList[loopPenetratedEnemies[i]]->addDebuff(debuffPoison, this->bulletSpecials[weaponPoisionStrength]/1.5, 5); //Takes twice as long to deal complete damage, but dealts 50% more damage.
             }
             if(this->bulletSpecials[weaponElectricStrength] > 0){
-                livingList[loopPenetratedEnemies[i]]->addDebuff(debuffElectrified, this->bulletSpecials[weaponElectricStrength], 1); //Electric is instantly deal the full damage
+                livingList[loopPenetratedEnemies[i]]->addDebuff(debuffElectrified, this->bulletSpecials[weaponElectricStrength], 0.33); //Electric is instantly deal the full damage
             }
             if(this->bulletSpecials[weaponSlowStrenght] > 0){
                 livingList[loopPenetratedEnemies[i]]->addDebuff(debuffSlowed, this->bulletSpecials[weaponSlowStrenght], 0.75); //Slowness lasts 0.75 seconds.
             }
 
             //Damage Enemy
-            livingList[loopPenetratedEnemies[i]]->takeDamage(damage, crit);
+            livingList[loopPenetratedEnemies[i]]->takeDamage(damage, crit, this->bulletStats[weaponArmorPenetration]);
         }
 
         if(!isPassable(this->posX + deltaX_l/loopI, this->posY, this->width, this->height)){
@@ -234,7 +234,54 @@ void MissileBullet::update(){
         }
     }
 
-    if(this->explode){ //The bullet died, it will now explode
+    if(this->bulletSpecials[weaponHomingForce] > 0){
+        int closestSoFar = -1;
+        double distanceDelta = 99999999999, oldDistanceDelta = 99999999999;
+
+        for(int i = 0; i < livingList.size(); i++){ //We don't use the quadtree here since it doesn't work well with finding the absolute closest object.
+            if(livingList[i] != NULL && livingList[i]->getActive()){
+                //Using the pythagorean theorem without square root for better perfomance, as it is only used for comparing the values together.
+                //This has little risk of overflowing since the distance would have to be ~44k pixels away from the bullet. That would pretty much never happen.
+                oldDistanceDelta = distanceDelta;
+                distanceDelta = pow(abs(livingList[i]->getCenterPosition(0)-this->centerX), 2)+pow(abs(livingList[i]->getCenterPosition(1)-this->centerY), 2);
+
+                if(distanceDelta < oldDistanceDelta){
+                    closestSoFar = i;
+                }
+            }
+        }
+        if(closestSoFar > -1){
+            double desiredAngle = -atan2(this->centerX-livingList[closestSoFar]->getCenterPosition(0), this->centerY-livingList[closestSoFar]->getCenterPosition(1));
+
+            double angleFrameDelta = 180*toRadians*deltaTime*this->bulletSpecials[weaponHomingForce]; //Multiply the angle needed for a full turn by
+
+            //Calculate difference between the current angle and desiredAngle
+            double angleDelta = this->angle - desiredAngle;
+
+            //Keep it in range from -180 to 180 to make efficient turns.
+            if(angleDelta > 180*toRadians){
+                angleDelta -= 360*toRadians;
+            }
+            if(angleDelta < -180*toRadians){
+                angleDelta += 360*toRadians;
+            }
+
+            if(angleDelta > 0){
+                //Turn clockwise
+                this->angle -= angleFrameDelta;
+            }else{
+                //Turn counter-clockwise
+                this->angle += angleFrameDelta;
+            }
+
+            //Just set angle to target angle if they are close
+            if(abs(angleDelta) < angleFrameDelta){
+                this->angle = desiredAngle;
+            }
+        }
+    }
+
+    if(this->explode){ //The bullet died and will explode if it's supposed to
         //Hit all enemies in the explosion radius
         double radius = this->bulletSpecials[weaponExplosionRadius];
         double pRadius = sqrt(pow(this->bulletSpecials[weaponExplosionRadius], 2)*2);

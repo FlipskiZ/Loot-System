@@ -11,7 +11,7 @@ class LivingPlayer : public LivingEntity{
         void update();
         void draw();
         void fireWeapon();
-        void takeDamage(double damage, bool crit);
+        void takeDamage(double damage, bool crit, double armorBypass = 0);
         void takeDebuffDamage(double damage, int debuffID);
         void healHP(double health);
 

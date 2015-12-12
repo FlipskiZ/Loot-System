@@ -11,13 +11,14 @@ void PlayState::init(){
 
     //Create Player
     double width = 24, height = 24, movementSpeed = 128, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25, inventorySpace = 20;
-    double maxHP = 10;
+    double maxHP = 10, armor = 0;
     playerList.resize(1);
     playerList[0] = unique_ptr<LivingPlayer>(new LivingPlayer());
     playerList[0]->setPos(mapDisplayWidth/2-width/2, mapDisplayHeight/2-height/2);
     playerList[0]->setDimensions(width, height);
     playerList[0]->setMovementSpeed(movementSpeed);
     playerList[0]->setMaxHP(maxHP);
+    playerList[0]->setArmor(armor);
     playerList[0]->setSheetDimensions(sheetColums, sheetRows, width, height);
     playerList[0]->setAnimationSpeed(animationSpeed);
     playerList[0]->setBitmap(playerImage);
@@ -119,12 +120,13 @@ void PlayState::update(Engine* engine){
     if(al_key_down(&keyState, ALLEGRO_KEY_G)){
         if(lastKeyPress != ALLEGRO_KEY_G){
         double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
-        double maxHP = randInt(enemyLevel, enemyLevel*10);
+        double maxHP = randInt(enemyLevel*5, enemyLevel*20), armor = randInt(enemyLevel, enemyLevel*2);
         unique_ptr<LivingZombie> newZombie(new LivingZombie());
         newZombie->setPos(mouseX-width/2, mouseY-height/2);
         newZombie->setDimensions(width, height);
         newZombie->setMovementSpeed(movementSpeed);
         newZombie->setMaxHP(maxHP);
+        newZombie->setArmor(armor);
         newZombie->setSheetDimensions(sheetColums, sheetRows, width, height);
         newZombie->setAnimationSpeed(animationSpeed);
         newZombie->setBitmap(zombieImage);

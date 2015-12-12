@@ -23,26 +23,26 @@ class MissileBullet : public MissileEntity{
         bool playerOwned;
 
         std::vector<double> bulletStats;
-        /*double damage; //check
-        double minDamage; //check
-        double maxDamage; //check
-        double fireRate; //check
-        double shotSpeed; //check
-        double accuracy; //check
-        double critChance; //check
-        double critStrength; //check
-        double armorPenetration;*/
+        /*double damage;            //check
+        double minDamage;           //check
+        double maxDamage;           //check
+        double fireRate;            //check
+        double shotSpeed;           //check
+        double accuracy;            //check
+        double critChance;          //check
+        double critStrength;        //check
+        double armorPenetration;*/  //check
 
         std::vector<double> bulletSpecials;
-        /*double fireStrength; //Burning. Damage over time
-        double poisionStrength; //Poison. Damage over time
-        double electricStrength; //Lightning. Paralyze the enemy
-        double slowStrenght; //Slowness amount. Decreases by a constant amount over time
+        /*double fireStrength; //Burning. Damage over time                                      //check
+        double poisionStrength; //Poison. Damage over time                                      //check
+        double electricStrength; //Lightning. Paralyze the enemy                                //check
+        double slowStrenght; //Slowness amount. Decreases by a constant amount over time        //check
         double additionalBullets; //Additional bullets in a 45 degree spread                    //check
         double explosionRadius; //Decreases in damage the further out from center the target is //check
         double bulletSplit; //Splits after a short while                                        //check
         double ricochetAmount; //Bounces off of walls                                           //check
-        double homingForce; //Depends on ease of implementation. Homes on closest enemy
+        double homingForce; //Depends on ease of implementation. Homes on closest enemy         //check
         double vampirism; //Steals a percentage of the base damage dealt every bullet hit       //check
         double executionTreshold; //Instant kill at health percantage                           //check
         double penetrationAmount; //Amount of times the bullet can penetrate enemies*/          //check

@@ -5,7 +5,21 @@ LivingZombie::LivingZombie(){
     this->livingCollisions.clear();
 }
 
-void LivingZombie::takeDamage(double damage, bool crit){
+void LivingZombie::takeDamage(double damage, bool crit, double armorBypass){
+    double armor_l = this->livingArmor;
+
+    armor_l = armor_l*(1 - armorBypass); //Reduce the armor by the armorbypass percentage
+    if(armor_l < 0){
+        armor_l = 0;
+    }
+    if(damage > 1){
+        if(damage-armor_l < 1){ //If the damage will be less than 1 after armor set the damage to 1; Effectively making 1 the minimum damage with armor.
+            damage = 1;
+        }else{
+            damage -= armor_l;
+        }
+    }
+
     double movementSpeed = 160, deathTime = 0.6, frictionValue = 2, gravityValue = 5, angle = randDouble(-45, 45)*toRadians;
     int movePattern = patternGravity, fontValue = 0;
     bool collidesWithMap = false;
@@ -40,27 +54,32 @@ void LivingZombie::takeDamage(double damage, bool crit){
 }
 
 void LivingZombie::takeDebuffDamage(double damage, int debuffID){
-    if(debuffID == debuffElectrified){
-        double movementSpeed = 160, deathTime = 0.6, frictionValue = 2, gravityValue = 5, angle = randDouble(-45, 45)*toRadians;
-        int movePattern = patternGravity, fontValue = 0;
-        bool collidesWithMap = false;
-        string textValue = dtos(round(damage*100)/100);
-        textValue.insert(textValue.begin(), '-');
-        ALLEGRO_COLOR colorValue = al_map_rgb(50, 225, 255);
-
-        unique_ptr<EntityParticle> newParticle(new EntityParticle);
-        newParticle->setPos(this->centerX, this->posY);
-        newParticle->setMovementSpeed(movementSpeed);
-        newParticle->setMovePattern(movePattern);
-        newParticle->setDeltaX(movementSpeed, angle), newParticle->setDeltaY(movementSpeed, angle);
-        newParticle->setDeathTime(deathTime);
-        newParticle->setFriction(frictionValue);
-        newParticle->setGravity(gravityValue);
-        newParticle->setCollidesWithMap(collidesWithMap);
-        newParticle->setTextValue(textValue, fontValue);
-        newParticle->setColor(colorValue);
-        addParticleToList(move(newParticle));
+    double movementSpeed = 160, deathTime = 0.6, frictionValue = 2, gravityValue = 5, angle = randDouble(-45, 45)*toRadians;
+    int movePattern = patternGravity, fontValue = 0;
+    bool collidesWithMap = false;
+    string textValue = dtos(round(damage*100)/100);
+    textValue.insert(textValue.begin(), '-');
+    ALLEGRO_COLOR colorValue = al_map_rgb(255, 255, 255);
+    if(debuffID == debuffBurning){
+        colorValue = al_map_rgb(255, 125, 50);
+    }else if(debuffID == debuffPoison){
+        colorValue = al_map_rgb(75, 150, 50);
+    }else if(debuffID == debuffElectrified){
+        colorValue = al_map_rgb(50, 225, 255);
     }
+
+    unique_ptr<EntityParticle> newParticle(new EntityParticle);
+    newParticle->setPos(this->centerX, this->posY);
+    newParticle->setMovementSpeed(movementSpeed);
+    newParticle->setMovePattern(movePattern);
+    newParticle->setDeltaX(movementSpeed, angle), newParticle->setDeltaY(movementSpeed, angle);
+    newParticle->setDeathTime(deathTime);
+    newParticle->setFriction(frictionValue);
+    newParticle->setGravity(gravityValue);
+    newParticle->setCollidesWithMap(collidesWithMap);
+    newParticle->setTextValue(textValue, fontValue);
+    newParticle->setColor(colorValue);
+    addParticleToList(move(newParticle));
 
     this->livingHP -= damage;
 

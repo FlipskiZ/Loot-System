@@ -66,7 +66,7 @@ void ItemWeapon::draw(){
         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-155, 0, "Accuracy: %.2f deg spread", 25.5-this->weaponStats[weaponAccuracy]*25.5);
         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-140, 0, "Crit Chance: %.2f%%", this->weaponStats[weaponCritChance]*100);
         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-125, 0, "Crit Strength: %.2f%%", this->weaponStats[weaponCritStrength]*100);
-        al_draw_textf(smallFont, rarityColor, mouseX, mouseY-110, 0, "Armor Penetration: %.2f", this->weaponStats[weaponArmorPenetration]);
+        al_draw_textf(smallFont, rarityColor, mouseX, mouseY-110, 0, "Armor Penetration: %.2f%%", this->weaponStats[weaponArmorPenetration]*100);
 
         al_draw_textf(smallFont, rarityColor, mouseX+500, mouseY-200, ALLEGRO_ALIGN_RIGHT, "Min: %+.2f%% Max: %+.2f%%", (lootSystem.getGunPrefix(this->weaponPrefix, weaponMinDamage)*lootSystem.getGunSuffix(this->weaponSuffix, weaponMinDamage)-1)*100, (lootSystem.getGunPrefix(this->weaponPrefix, weaponMaxDamage)*lootSystem.getGunSuffix(this->weaponSuffix, weaponMaxDamage)-1)*100);
         al_draw_textf(smallFont, rarityColor, mouseX+500, mouseY-185, ALLEGRO_ALIGN_RIGHT, "%+.2f%%", (lootSystem.getGunPrefix(this->weaponPrefix, weaponFireRate)*lootSystem.getGunSuffix(this->weaponSuffix, weaponFireRate)-1)*100);
