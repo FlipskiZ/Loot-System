@@ -236,16 +236,16 @@ void MissileBullet::update(){
 
     if(this->bulletSpecials[weaponHomingForce] > 0){
         int closestSoFar = -1;
-        double distanceDelta = 99999999999, oldDistanceDelta = 99999999999;
+        double distanceDelta = INT_MAX, oldDistanceDelta = INT_MAX; //MAX_INT
 
         for(int i = 0; i < livingList.size(); i++){ //We don't use the quadtree here since it doesn't work well with finding the absolute closest object.
             if(livingList[i] != NULL && livingList[i]->getActive()){
                 //Using the pythagorean theorem without square root for better perfomance, as it is only used for comparing the values together.
                 //This has little risk of overflowing since the distance would have to be ~44k pixels away from the bullet. That would pretty much never happen.
-                oldDistanceDelta = distanceDelta;
                 distanceDelta = pow(abs(livingList[i]->getCenterPosition(0)-this->centerX), 2)+pow(abs(livingList[i]->getCenterPosition(1)-this->centerY), 2);
 
                 if(distanceDelta < oldDistanceDelta){
+                    oldDistanceDelta = distanceDelta;
                     closestSoFar = i;
                 }
             }
@@ -310,7 +310,7 @@ void MissileBullet::update(){
                         damage = 0;
                     }
 
-                    livingList[livingCollisions[j]]->takeDamage(damage, false);
+                    livingList[livingCollisions[j]]->takeDamage(damage, false, this->bulletStats[weaponArmorPenetration]);
                 }
             }
         }
