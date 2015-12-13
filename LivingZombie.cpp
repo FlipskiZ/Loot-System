@@ -195,7 +195,7 @@ void LivingZombie::draw(){
 
     //HP bar
     if(this->livingHP < this->livingMaxHP){
-        al_draw_rectangle(this->posX-1, this->posY-11, this->posX+this->width+1, this->posY-4, al_map_rgb(200,200,200), 2);
-        al_draw_filled_rectangle(this->posX, this->posY-10, 2+(this->posX-2)+this->width/this->livingMaxHP*this->livingHP, this->posY-5, al_map_rgb(200,0,0));
+        al_draw_rectangle(this->posX-1+cameraOffsetX, this->posY-11+cameraOffsetY, this->posX+this->width+1+cameraOffsetX, this->posY-4+cameraOffsetY, al_map_rgb(200,200,200), 2);
+        al_draw_filled_rectangle(this->posX+cameraOffsetX, this->posY-10+cameraOffsetY, 2+(this->posX-2)+this->width/this->livingMaxHP*this->livingHP+cameraOffsetX, this->posY-5+cameraOffsetY, al_map_rgb(200,0,0));
     }
 }

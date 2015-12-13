@@ -11,14 +11,21 @@ struct WEAPON_STATS{
     double critChance;
     double critStrength;
     double armorPenetration;
+    double additionalSpecial;
 };
 
-//Name - Min Damage - Max Damage - Fire Rate - Shot Speed - Accuracy - Crit Chance - Crit Strength - Armor Penetration
+//Name - Min Damage - Max Damage - Fire Rate - Shot Speed - Accuracy - Crit Chance - Crit Strength - Armor Penetration - Additional Special (ex. shotgun has multiple bullets, laser has burning etc.)
 
 vector<WEAPON_STATS> gunType = { //Constant Numbers. The further in the array they are, the better/more unique they should be.
-    {"Pistol", 1, 1, 0.5, 256, 0.95, 0, 1, 0},
-    {"Rifle", 2, 3, 1, 1024, 1, 0.1, 1.5, 0.2},
-    {"Machine Gun", 1, 2, 0.125, 512, 0.9, 0.05, 1.25, 0.1},
+    {"Pistol", 1, 1, 0.5, 256, 0.95, 0, 1, 0, weaponSpecialNone},
+    {"Rifle", 2, 3, 1, 1024, 1, 0.1, 1.5, 0.2, weaponSpecialNone},
+    {"Shotgun", 2, 3, 1, 512, 0, 0.15, 1.75, 0.25, weaponAdditionalBullets},
+    {"Machine Gun", 1, 2, 0.0625, 512, 0.9, 0.05, 1.25, 0.1, weaponSpecialNone},
+    {"Railgun", 4, 5, 1.5, 2048, 2, 0.2, 2, 0.3, weaponPenetrationAmount},
+    {"RPG", 3, 4, 1, 256, 0.8, 0.1, 1.5, 0.25, weaponExplosionRadius},
+    {"Plasma Pistol", 2, 4, 0.35, 512, 0.8, 0.2, 2.3, 0.5, weaponFireStrength},
+    {"Plasma Machine Gun", 2, 3, 0.1, 768, 0.8, 0.25, 2.5, 0.4, weaponFireStrength},
+    {"Homing Gun", 1, 2, 0, 512, 0.8, 0.25, 2.5, 0.4, weaponHomingForce},
 };
 
 //Name - Min Damage - Max Damage - Fire Rate - Shot Speed - Accuracy - Crit Chance - Crit Strength - Armor Penetration
@@ -31,6 +38,10 @@ vector<WEAPON_STATS> gunPrefix = { //Percentage Modification. 25% to get none/no
     {"Strong", 1.75, 2, 1, 1, 1, 1.2, 1.2, 1.1},
     {"Angry", 2, 3, 2, 1.25, 0.5, 0.75, 1, 0},
     {"Old", 0.6, 0.6, 0.75, 0.8, 0.9, 0.75, 0.75, 0.75},
+    {"Fast", 0.8, 0.9, 1.35, 2.5, 1, 1, 1, 0.9},
+    {"Intense", 1.2, 1.35, 0.9, 1.15, 0.9, 1.1, 1.2, 1.15},
+    {"Feeble", 0.6, 0.75, 1, 1, 0.9, 0.85, 0.9, 0.9},
+    {"Frail", 0.4, 0.5, 1, 1, 0.85, 0.85, 0.85, 0.85},
 };
 
 //Name - Min Damage - Max Damage - Fire Rate - Shot Speed - Accuracy - Crit Chance - Crit Strength - Armor Penetration
@@ -43,6 +54,10 @@ vector<WEAPON_STATS> gunSuffix = { //Percentage Modification. 25% to get none/no
     {"Of Strength", 1.75, 2, 1, 1, 1, 1.2, 1.2, 1.1},
     {"Of Heavyness", 2, 2, 0.75, 0.75, 0.75, 1.25, 1.25, 0.75},
     {"Of Laziness", 0.7, 0.7, 0.7, 0.5, 0.8, 0.75, 0.75, 0.75},
+    {"Of Swiftness", 0.8, 0.9, 1.35, 2.5, 1, 1, 1, 0.9},
+    {"Of Powefullness", 1.2, 1.35, 1, 1, 1, 1, 1, 1},
+    {"Of Feebleness", 0.8, 0.9, 0.95, 0.95, 0.95, 0.95, 0.95, 0.9},
+    {"Of The Weak", 0.6, 0.75, 1, 1, 1, 1, 1, 1},
 };
 
 LootSystem::LootSystem(){
@@ -74,6 +89,10 @@ double LootSystem::getGunType(int type, int element){
             return gunType[type].armorPenetration; break;
     }
     return 0;
+}
+
+int LootSystem::getGunTypeAdditionalSpecial(int type){
+    return gunType[type].additionalSpecial;
 }
 
 double LootSystem::getGunPrefix(int prefix, int element){
@@ -271,8 +290,13 @@ void LootSystem::createWeapon(int level){
         }
     }
 
-    if(this->weaponStats[weaponAccuracy] > 1){ //If accuracy is over 100% set it to 100%. Accuracy can't be below 0. The closer accuracy is to 0, the bigger the 90 degrees slice it can shoot in will be.
+    if(this->weaponStats[weaponAccuracy] > 1){ //If accuracy is over 100% set it to 100%. Accuracy can't be below 0. The closer accuracy is to 0, the bigger the 25.5 degrees slice it can shoot in will be.
         this->weaponStats[weaponAccuracy] = 1;
+    }
+
+    int additionalSpecial = this->getGunTypeAdditionalSpecial(this->weaponType);
+    if(additionalSpecial != weaponSpecialNone){
+        this->weaponSpecials[additionalSpecial] = getRandSpecialStrength(additionalSpecial, level);
     }
 
     for(int i = 0; i < this->weaponRarity; i++){

@@ -14,6 +14,7 @@ class LootSystem{
         void createWeapon(int level); //Return a weapon object in the future
 
         double getGunType(int type, int element);
+        int getGunTypeAdditionalSpecial(int type);
         double getGunPrefix(int type, int element);
         double getGunSuffix(int type, int element);
 

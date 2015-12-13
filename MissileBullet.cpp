@@ -112,7 +112,7 @@ void MissileBullet::update(){
 
             if(this->bulletSpecials[weaponExecutionTreshold] > 0){
                 if(livingList[loopPenetratedEnemies[i]]->getCurrentHP() < livingList[loopPenetratedEnemies[i]]->getMaxHP()*this->bulletSpecials[weaponExecutionTreshold]){
-                    damage = livingList[loopPenetratedEnemies[i]]->getCurrentHP();
+                    damage = livingList[loopPenetratedEnemies[i]]->getCurrentHP()+livingList[loopPenetratedEnemies[i]]->getArmor();
                     crit = true;
                 }
             }
@@ -268,15 +268,15 @@ void MissileBullet::update(){
 
             if(angleDelta > 0){
                 //Turn clockwise
-                this->angle -= angleFrameDelta;
+                this->setAngle(this->angle - angleFrameDelta);
             }else{
                 //Turn counter-clockwise
-                this->angle += angleFrameDelta;
+                this->setAngle(this->angle + angleFrameDelta);
             }
 
             //Just set angle to target angle if they are close
             if(abs(angleDelta) < angleFrameDelta){
-                this->angle = desiredAngle;
+                this->setAngle(desiredAngle);
             }
         }
     }

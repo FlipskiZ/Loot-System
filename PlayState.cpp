@@ -120,9 +120,9 @@ void PlayState::update(Engine* engine){
     if(al_key_down(&keyState, ALLEGRO_KEY_G)){
         if(lastKeyPress != ALLEGRO_KEY_G){
         double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
-        double maxHP = randInt(enemyLevel*5, enemyLevel*20), armor = randInt(enemyLevel, enemyLevel*2);
+        double maxHP = randInt(enemyLevel*10, enemyLevel*50), armor = randInt(enemyLevel*2, enemyLevel*5);
         unique_ptr<LivingZombie> newZombie(new LivingZombie());
-        newZombie->setPos(mouseX-width/2, mouseY-height/2);
+        newZombie->setPos(mouseX-cameraOffsetX-width/2, mouseY-cameraOffsetY-height/2);
         newZombie->setDimensions(width, height);
         newZombie->setMovementSpeed(movementSpeed);
         newZombie->setMaxHP(maxHP);

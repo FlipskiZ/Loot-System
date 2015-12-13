@@ -166,5 +166,5 @@ void CollisionDetection::draw(){
             this->subNodes[i]->draw();
         }
     }
-    al_draw_rectangle(this->posX, this->posY, this->posX+this->width, this->posY+height, al_map_rgb(0, 0, 0), 3);
+    al_draw_rectangle(this->posX+cameraOffsetX, this->posY+cameraOffsetY, this->posX+this->width+cameraOffsetX, this->posY+height+cameraOffsetY, al_map_rgb(0, 0, 0), 3);
 }

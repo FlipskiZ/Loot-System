@@ -94,6 +94,12 @@ void Entity::setTypeId(int typeId){
 }
 void Entity::setAngle(double angle){
     this->angle = angle;
+    if(this->angle > 360*toRadians){
+        this->angle -= 360*toRadians;
+    }
+    if(this->angle < 0){
+        this->angle += 360*toRadians;
+    }
 }
 void Entity::setActive(bool active){
     this->active = active;

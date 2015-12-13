@@ -52,6 +52,7 @@ enum itemRarity{
 };
 
 enum weaponStats{
+    weaponStatNone = -1, //None
     weaponMinDamage = 0,
     weaponMaxDamage,
     weaponFireRate,
@@ -64,6 +65,7 @@ enum weaponStats{
 };
 
 enum weaponSpecials{
+    weaponSpecialNone = -1, //None
     weaponFireStrength = 0, //Burning
     weaponPoisionStrength, //Poison
     weaponElectricStrength, //Lightning. Bounces to closest target, losing a percentage of power depending on the distance
@@ -80,6 +82,7 @@ enum weaponSpecials{
 };
 
 enum particlePatterns{
+    patternNone = -1,
     patternHomeToPlayer = 0,
     patternHomeToMouse,
     patternKeepMomentum,
@@ -87,6 +90,7 @@ enum particlePatterns{
 };
 
 enum entityDebuffs{
+    debuffNone = -1,
     debuffBurning = 0,
     debuffPoison,
     debuffElectrified,

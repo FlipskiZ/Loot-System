@@ -194,7 +194,7 @@ string dtos(double arg){
 }
 
 void loadConfig(){
-    screenWidth = 1280, screenHeight = 720, mapDisplayWidth = 1280, mapDisplayHeight = 640, mapArrayWidth = 40, mapArrayHeight = 20, tileSize = 32;
+    screenWidth = 1280, screenHeight = 720, mapDisplayWidth = 1280, mapDisplayHeight = 640, mapArrayWidth = 80, mapArrayHeight = 40, tileSize = 32;
     MAX_BUTTONS = 25, MAX_PLAYERS = 1, MAX_ITEMS = 1000, MAX_MISSILES = 1000, MAX_LIVING = 1000, MAX_PARTICLES = 1000, MAX_TREE_OBJECTS = 5, MAX_TREE_LEVELS = 5;
     FPS = 60, ticksPerSecond = 60;
 

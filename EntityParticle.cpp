@@ -134,8 +134,8 @@ void EntityParticle::update(){
 
 void EntityParticle::draw(){
     if(!this->particleIsText){
-        al_draw_filled_rectangle(this->posX, this->posY, this->posX+this->width, this->posY+this->height, this->particleColor);
+        al_draw_filled_rectangle(this->posX+cameraOffsetX, this->posY+cameraOffsetY, this->posX+this->width+cameraOffsetX, this->posY+this->height+cameraOffsetY, this->particleColor);
     }else{
-        al_draw_text(this->getFont(), this->particleColor, this->posX, this->posY, ALLEGRO_ALIGN_CENTER, this->particleText.c_str());
+        al_draw_text(this->getFont(), this->particleColor, this->posX+cameraOffsetX, this->posY+cameraOffsetY, ALLEGRO_ALIGN_CENTER, this->particleText.c_str());
     }
 }
