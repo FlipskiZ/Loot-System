@@ -45,6 +45,7 @@ void MissileBullet::update(){
         this->livingColX = false, this->livingColY = false;
         this->richochetX = false, this->richochetY = false;
         this->loopPenetratedEnemies.clear();
+        this->loopEnemiesHit.clear();
 
         bool loopCol = false;
 
@@ -73,11 +74,15 @@ void MissileBullet::update(){
                     if(find(penetratedEnemies.begin(), penetratedEnemies.end(), livingCollisions[j]) == penetratedEnemies.end()){//If bullet penetrates and if it hasn't already penetrated this entity
                         if(this->bulletSpecials[weaponPenetrationAmount] > 0){
                             if(this->bulletSpecials[weaponPenetrationAmount] >= 1 ||
-                            (this->bulletSpecials[weaponPenetrationAmount] < 1 && randDouble() < this->bulletSpecials[weaponPenetrationAmount])){
+                                (this->bulletSpecials[weaponPenetrationAmount] < 1 && randDouble() < this->bulletSpecials[weaponPenetrationAmount])){
+
                                 this->penetratedEnemies.push_back(livingCollisions[j]);
                                 this->bulletSpecials[weaponPenetrationAmount]--;
+                                if(this->bulletSpecials[weaponPenetrationAmount] < 0){
+                                    this->bulletSpecials[weaponPenetrationAmount] = 0;
+                                }
                                 livingColX = false, livingColY = false;
-                            }else if(bulletSpecials[weaponPenetrationAmount] < 1){ //If it didn't succeed the randDouble check
+                            }else{ //If it didn't succeed the randDouble check
                                 this->bulletSpecials[weaponPenetrationAmount] = 0;
                             }
                         }
@@ -88,6 +93,7 @@ void MissileBullet::update(){
                     }else{
                         livingColX = false, livingColY = false;
                     }
+                    this->loopEnemiesHit.push_back(livingCollisions[j]);
                 }
             }
         }
@@ -95,13 +101,15 @@ void MissileBullet::update(){
         double damage;
         bool crit;
 
-        for(int i = 0; i < this->loopPenetratedEnemies.size(); i++){
-            for(int j = 0; j < this->penetratedEnemies.size(); j++){
-                if(find(this->penetratedEnemies.begin(), this->penetratedEnemies.end(), this->loopPenetratedEnemies[i]) == this->penetratedEnemies.end()){
-                    this->penetratedEnemies.erase(this->penetratedEnemies.begin()+j);
-                }
+        for(int i = 0; i < this->penetratedEnemies.size(); i++){
+            if(find(this->loopEnemiesHit.begin(), this->loopEnemiesHit.end(), this->penetratedEnemies[i]) == this->loopEnemiesHit.end()){
+                //printf("%d\n", this->penetratedEnemies[i]);
+                this->penetratedEnemies.erase(this->penetratedEnemies.begin()+i);
+                i--;
             }
+        }
 
+        for(int i = 0; i < this->loopPenetratedEnemies.size(); i++){
             damage = randDouble(this->bulletStats[weaponMinDamage], this->bulletStats[weaponMaxDamage]);
             crit = false;
 
@@ -306,11 +314,9 @@ void MissileBullet::update(){
                     damage = randDouble(this->bulletStats[weaponMinDamage]-(distance*this->bulletStats[weaponMinDamage]/pRadius),
                             this->bulletStats[weaponMaxDamage]-(distance*this->bulletStats[weaponMaxDamage]/pRadius));
 
-                    if(damage < 0){
-                        damage = 0;
+                    if(damage > 0){
+                        livingList[livingCollisions[j]]->takeDamage(damage, false, this->bulletStats[weaponArmorPenetration]);
                     }
-
-                    livingList[livingCollisions[j]]->takeDamage(damage, false, this->bulletStats[weaponArmorPenetration]);
                 }
             }
         }
@@ -330,6 +336,6 @@ void MissileBullet::draw(){
     if(!this->explode){
         al_draw_rotated_bitmap(this->frameImage, this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
     }else{
-        al_draw_scaled_bitmap(explosionImage, 0, 0, 32, 32, this->centerX-this->bulletSpecials[weaponExplosionRadius], this->centerY-this->bulletSpecials[weaponExplosionRadius], this->bulletSpecials[weaponExplosionRadius]*2, this->bulletSpecials[weaponExplosionRadius]*2, NULL);
+        al_draw_scaled_bitmap(explosionImage, 0, 0, 32, 32, this->centerX-this->bulletSpecials[weaponExplosionRadius]+cameraOffsetX, this->centerY-this->bulletSpecials[weaponExplosionRadius]+cameraOffsetY, this->bulletSpecials[weaponExplosionRadius]*2, this->bulletSpecials[weaponExplosionRadius]*2, NULL);
     }
 }

@@ -14,7 +14,7 @@ void PlayState::init(){
     double maxHP = 10, armor = 0;
     playerList.resize(1);
     playerList[0] = unique_ptr<LivingPlayer>(new LivingPlayer());
-    playerList[0]->setPos(mapDisplayWidth/2-width/2, mapDisplayHeight/2-height/2);
+    playerList[0]->setPos(mapArrayWidth*tileSize/2-width/2, mapArrayHeight*tileSize/2-height/2);
     playerList[0]->setDimensions(width, height);
     playerList[0]->setMovementSpeed(movementSpeed);
     playerList[0]->setMaxHP(maxHP);
@@ -41,6 +41,8 @@ void PlayState::init(){
     collisionDetection = unique_ptr<CollisionDetection>(new CollisionDetection(0, 0, 0, mapArrayWidth*tileSize, mapArrayHeight*tileSize)); //Level, PosX, PosY, Width, Height
     lootSystem.createWeapon(1);
     playerList[0]->equipWeapon(0);
+
+    enemyLevel = 1;
 
     al_stop_samples();
 }

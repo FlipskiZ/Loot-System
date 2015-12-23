@@ -55,6 +55,7 @@ class MissileBullet : public MissileEntity{
         bool livingColX, livingColY;
         bool richochetX, richochetY;
         std::vector<int> penetratedEnemies; //Keeps trach of currently penetrating enemies
+        std::vector<int> loopEnemiesHit; //This is so that a bullet knows when it can hit the same enemy again
         std::vector<int> loopPenetratedEnemies; //This is in case the bullet hits multiple enemies in a loop
 
         std::vector<int> livingCollisions;
