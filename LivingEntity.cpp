@@ -6,6 +6,12 @@ LivingEntity::LivingEntity(){
     this->livingMaxHP = 0;
     this->livingDebuffs.resize(AMOUNT_DEBUFFS);
     this->timeAlive = 0;
+    this->livingDamaged = false;
+    this->livingDamagedDuration = 0;
+    this->livingDamagedHelper = 0;
+    this->livingHealed = false;
+    this->livingHealedDuration = 0;
+    this->livingHealedHelper = 0;
 }
 
 double LivingEntity::getCurrentHP(){

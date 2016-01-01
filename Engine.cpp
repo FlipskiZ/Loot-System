@@ -33,6 +33,8 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     explosionImage = al_load_bitmap("graphics/explosionImage.png");
     zombieImage = al_load_bitmap("graphics/zombieImage.png");
 
+    healthText = al_create_bitmap(360, al_get_font_ascent(defaultFont));
+
     al_reserve_samples(0); //Amount of sounds to load in the game
 
     event_queue = al_create_event_queue();
@@ -61,8 +63,6 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     drawScreen = false, timerEvent = false, done = false, mouseButtonLeft = false, mouseButtonLeftClick = false, mouseButtonRight = false, mouseButtonRightClick = false, inGame = false;
     mouseX = 0, mouseY = 0, volumeLevel = 1;
     lastKeyPress = 0, mouseWheel = 0;
-
-    enemyLevel = 1;
 
     loadMapArray();
 

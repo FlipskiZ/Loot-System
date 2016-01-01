@@ -3,6 +3,7 @@
 
 LivingZombie::LivingZombie(){
     this->livingCollisions.clear();
+    this->setAnimationValue(1, false, 1);
 }
 
 void LivingZombie::takeDamage(double damage, bool crit, double armorBypass){
@@ -51,6 +52,10 @@ void LivingZombie::takeDamage(double damage, bool crit, double armorBypass){
     if(this->livingHP <= 0){
         this->setActive(false);
     }
+
+    this->livingDamaged = true;
+    this->livingDamagedDuration = 0.25;
+    this->livingDamagedHelper = 0;
 }
 
 void LivingZombie::takeDebuffDamage(double damage, int debuffID){
@@ -86,6 +91,10 @@ void LivingZombie::takeDebuffDamage(double damage, int debuffID){
     if(this->livingHP <= 0){
         this->setActive(false);
     }
+
+    this->livingDamaged = true;
+    this->livingDamagedDuration = 0.125;
+    this->livingDamagedHelper = 0;
 }
 
 void LivingZombie::healHP(double health){
@@ -113,14 +122,22 @@ void LivingZombie::healHP(double health){
     if(this->livingHP > this->livingMaxHP){
         this->livingHP = this->livingMaxHP;
     }
+
+    this->livingHealed = true;
+    this->livingHealedDuration = 0.25;
+    this->livingHealedHelper = 0;
 }
 
 void LivingZombie::update(){
-
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     this->updateDebuffs();
 
+    this->angleSin = sin(this->angle), this->angleCos = -cos(this->angle);
+
     setAngle(-atan2(this->getCenterPosition(0) - playerList[0]->getCenterPosition(0), this->getCenterPosition(1) - playerList[0]->getCenterPosition(1)));
-    this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
+    this->setDeltaX(angleSin*this->movementSpeed), this->setDeltaY(angleCos*this->movementSpeed);
     double deltaX_l = this->getDelta(0), deltaY_l = this->getDelta(1);
 
     bool colX = false, colY = false;
@@ -158,10 +175,34 @@ void LivingZombie::update(){
     if(checkCollision(this->posX + deltaX_l, this->posY, playerList[0]->getPosition(0), playerList[0]->getPosition(1),
         this->width, this->height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
         colX = true;
+
+        if(this->animationValue != 2){
+            this->setAnimationValue(3, true, 1);
+            if(this->nextFrame && this->frameX == 2){
+                playerList[0]->takeDamage(2);
+            }
+        }
     }
     if(checkCollision(this->posX, this->posY + deltaY_l, playerList[0]->getPosition(0), playerList[0]->getPosition(1),
         this->width, this->height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
         colY = true;
+
+        if(this->animationValue != 2){
+            this->setAnimationValue(3, true, 1);
+            if(this->nextFrame && this->frameX == 2){
+                playerList[0]->takeDamage(2);
+            }
+        }
+    }
+
+    if(this->animationValue != 3){
+        if(checkCollision(this->posX + deltaX_l + this->angleSin*12, this->posY + deltaY_l + this->angleCos*12, playerList[0]->getPosition(0), playerList[0]->getPosition(1),
+            this->width, this->height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
+            this->setAnimationValue(2, true, 1);
+            if(this->nextFrame && this->frameX == 2){
+                playerList[0]->takeDamage(1);
+            }
+        }
     }
 
     if(!isPassable(this->posX + deltaX_l, this->posY, this->width, this->height)){
@@ -187,12 +228,34 @@ void LivingZombie::update(){
     this->setDeltaX(0);
     this->setDeltaY(0);
 
-    this->timeAlive += deltaTime; ///SHOW DEBUFF DAMAGE VALUES EVERY SECOND
+    this->timeAlive += deltaTime;
+
+    if(this->livingDamaged){
+        this->livingDamagedHelper += deltaTime;
+        if(this->livingDamagedHelper >= this->livingDamagedDuration){
+            this->livingDamaged = false;
+        }
+    }
+
+    if(this->livingHealed){
+        this->livingHealedHelper += deltaTime;
+        if(this->livingHealedHelper >= this->livingHealedDuration){
+            this->livingHealed = false;
+        }
+    }
 }
 
 void LivingZombie::draw(){
-    al_draw_rotated_bitmap(this->frameImage, this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
-
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
+    if(this->livingDamaged){
+        al_draw_tinted_rotated_bitmap(this->frameImage, al_map_rgba_f(1, 0, 0, 1), this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
+    }else if(this->livingHealed){
+        al_draw_tinted_rotated_bitmap(this->frameImage, al_map_rgba_f(0, 1, 0, 1), this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
+    }else{
+        al_draw_rotated_bitmap(this->frameImage, this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
+    }
     //HP bar
     if(this->livingHP < this->livingMaxHP){
         al_draw_rectangle(this->posX-1+cameraOffsetX, this->posY-11+cameraOffsetY, this->posX+this->width+1+cameraOffsetX, this->posY-4+cameraOffsetY, al_map_rgb(200,200,200), 2);

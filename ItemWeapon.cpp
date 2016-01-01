@@ -45,6 +45,9 @@ void ItemWeapon::setWeaponParts(int rarity, int type, int prefix, int suffix){
 }
 
 void ItemWeapon::update(){
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     this->hoveringOver = false;
     if(checkCollision(this->posX, this->posY, mouseX, mouseY, this->width, this->height, 0, 0)){
         this->hoveringOver = true;
@@ -55,11 +58,15 @@ void ItemWeapon::update(){
 }
 
 void ItemWeapon::draw(){
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     ALLEGRO_COLOR rarityColor = lootSystem.getRarityColor(this->weaponRarity);
     al_draw_filled_rectangle(this->posX, this->posY, this->posX+this->width, this->posY+this->height, rarityColor);
     if(this->hoveringOver){
-        al_draw_filled_rectangle(mouseX, mouseY-230, mouseX+550, mouseY, al_map_rgb(0, 0, 0));
-        al_draw_text(defaultFont, rarityColor, mouseX, mouseY-230, 0, this->weaponName.c_str());
+        al_draw_filled_rectangle(mouseX, mouseY-250, mouseX+550, mouseY, al_map_rgb(0, 0, 0));
+        al_draw_text(defaultFont, rarityColor, mouseX, mouseY-250, 0, this->weaponName.c_str());
+        al_draw_textf(smallFont, al_map_rgb(235, 190, 65), mouseX, mouseY-227, 0,  "Item Level: %.2f", this->itemLevel);
         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-210, 0, "Damage: %.2f-%.2f", this->weaponStats[weaponMinDamage], this->weaponStats[weaponMaxDamage]);
         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-195, 0, "Fire Rate: %.2f shots/s", 1/this->weaponStats[weaponFireRate]);
         al_draw_textf(smallFont, rarityColor, mouseX, mouseY-180, 0, "Shot Speed: %.2f tiles/s", this->weaponStats[weaponShotSpeed]/tileSize);

@@ -11,7 +11,7 @@ class LootSystem{
         LootSystem();
         ~LootSystem(){}
         void init();
-        void createWeapon(int level); //Return a weapon object in the future
+        int createWeapon(double level); //Return a weapon object in the future
 
         double getGunType(int type, int element);
         int getGunTypeAdditionalSpecial(int type);
@@ -22,7 +22,7 @@ class LootSystem{
         std::string getGunPrefixName(int prefix);
         std::string getGunSuffixName(int suffix);
 
-        double getRandSpecialStrength(int special, int level);
+        double getRandSpecialStrength(int special, double level);
 
         ALLEGRO_COLOR getRarityColor(int rarity);
     protected:

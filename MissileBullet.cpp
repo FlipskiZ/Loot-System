@@ -26,6 +26,9 @@ void MissileBullet::setMissileSpecials(std::vector<double> missileSpecials){
 }
 
 void MissileBullet::update(){
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     if(this->explode){
         if(this->explosionLingerCount >= this->explosionLinger){
             this->setActive(false);
@@ -247,7 +250,7 @@ void MissileBullet::update(){
         double distanceDelta = INT_MAX, oldDistanceDelta = INT_MAX; //MAX_INT
 
         for(int i = 0; i < livingList.size(); i++){ //We don't use the quadtree here since it doesn't work well with finding the absolute closest object.
-            if(livingList[i] != NULL && livingList[i]->getActive()){
+            if(livingList[i] != NULL && livingList[i]->getActive() && livingList[i]->getWorldPosition() == worldPosition){
                 //Using the pythagorean theorem without square root for better perfomance, as it is only used for comparing the values together.
                 //This has little risk of overflowing since the distance would have to be ~44k pixels away from the bullet. That would pretty much never happen.
                 distanceDelta = pow(abs(livingList[i]->getCenterPosition(0)-this->centerX), 2)+pow(abs(livingList[i]->getCenterPosition(1)-this->centerY), 2);
@@ -333,6 +336,9 @@ void MissileBullet::update(){
 }
 
 void MissileBullet::draw(){
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     if(!this->explode){
         al_draw_rotated_bitmap(this->frameImage, this->width/2, this->height/2, this->posX+this->width/2+cameraOffsetX, this->posY+this->height/2+cameraOffsetY, this->angle, NULL);
     }else{

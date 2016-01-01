@@ -42,6 +42,18 @@
 
 using namespace std;
 
+enum moveDirection{
+    moveUp = 0,
+    moveRight,
+    moveDown,
+    moveLeft
+};
+
+enum specialTileType{
+    specialTileChest = 2,
+
+};
+
 enum itemRarity{
     itemCommon = 0,
     itemUncommon,
@@ -102,6 +114,8 @@ enum buffs{
 
 };
 
+void changeWorldSegment(int direction);
+
 string itos(int arg); //converts an integer to a std::string
 string dtos(double arg); //converts an float to a std::string
 bool isPassable(double x, double y, double width, double height);
@@ -112,6 +126,7 @@ int addWeaponToList(unique_ptr<ItemWeapon> &&newWeapon);
 int addBulletToList(unique_ptr<MissileBullet> &&newBullet);
 int addZombieToList(unique_ptr<LivingZombie> &&newZombie);
 int addParticleToList(unique_ptr<EntityParticle> &&newParticle);
+int addSpecialTileToList(unique_ptr<SpecialTile> &&newTile);
 void loadMapArray();
 void saveMapArray();
 void drawMap();
@@ -126,15 +141,18 @@ inline bool randBool(){return randInt(0,1);}
 
 extern ALLEGRO_DISPLAY *display;
 
+extern ALLEGRO_FONT *bigFont;
 extern ALLEGRO_FONT *defaultFont;
 extern ALLEGRO_FONT *smallFont;
-extern ALLEGRO_FONT *bigFont;
 
 extern ALLEGRO_BITMAP *cursorImage;
 extern ALLEGRO_BITMAP *playerImage;
 extern ALLEGRO_BITMAP *bulletImage;
 extern ALLEGRO_BITMAP *explosionImage;
 extern ALLEGRO_BITMAP *zombieImage;
+
+extern ALLEGRO_BITMAP *healthText;
+extern ALLEGRO_BITMAP *healthTextHelper;
 
 extern ALLEGRO_KEYBOARD_STATE keyState;
 extern ALLEGRO_MOUSE_STATE mouseState;
@@ -152,6 +170,7 @@ extern vector<unique_ptr<LivingEntity>> livingList;
 extern vector<unique_ptr<EntityParticle>> particleList;
 extern vector<unique_ptr<Item>> itemList;
 extern vector<unique_ptr<MissileEntity>> missileList;
+extern vector<unique_ptr<SpecialTile>> specialTileList;
 
 extern unique_ptr<CollisionDetection> collisionDetection;
 
@@ -166,7 +185,10 @@ extern bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick,
 extern double mouseX, mouseY, volumeLevel;
 extern int lastKeyPress, mouseWheel;
 
-extern int enemyLevel;
+extern double currentLevel;
+
+extern vector<int> worldPosition;
+extern vector<vector<int>> visitedWorldPositions;
 
 extern vector<vector<int> > mapArray;
 

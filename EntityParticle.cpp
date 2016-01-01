@@ -95,6 +95,9 @@ void EntityParticle::updateMovePatternDelta(){
     }
 }
 void EntityParticle::update(){
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     if(this->particleTimeAlive >= this->particleDeathTime){
         this->setActive(false);
     }
@@ -133,6 +136,9 @@ void EntityParticle::update(){
 }
 
 void EntityParticle::draw(){
+    if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
+        return;
+    }
     if(!this->particleIsText){
         al_draw_filled_rectangle(this->posX+cameraOffsetX, this->posY+cameraOffsetY, this->posX+this->width+cameraOffsetX, this->posY+this->height+cameraOffsetY, this->particleColor);
     }else{

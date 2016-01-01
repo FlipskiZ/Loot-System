@@ -8,7 +8,7 @@ class LivingEntity : public Entity{
     public:
         LivingEntity();
         void updateDebuffs();
-        virtual void takeDamage(double damage, bool crit, double armorBypass = 0) = 0;
+        virtual void takeDamage(double damage, bool crit = false, double armorBypass = 0) = 0;
         virtual void takeDebuffDamage(double damage, int debuffID) = 0;
         virtual void healHP(double health) = 0;
 
@@ -29,6 +29,14 @@ class LivingEntity : public Entity{
         std::vector<std::vector<double>> livingDebuffs;
 
         double timeAlive;
+
+        bool livingDamaged;
+        double livingDamagedDuration;
+        double livingDamagedHelper;
+
+        bool livingHealed;
+        double livingHealedDuration;
+        double livingHealedHelper;
     private:
 };
 

@@ -18,6 +18,9 @@ class Entity{
         double getDimension(int worh);
         double getMovementSpeed();
         double getDelta(int xory);
+        int getWorldPosition(int xory);
+        std::vector<int> getWorldPosition();
+        bool getUsesWorldPosition();
         int getEntityId();
         int getTypeId();
         double getAngle(); //Degrees
@@ -31,6 +34,8 @@ class Entity{
         void setDeltaX(double deltaX, double angle);
         void setDeltaY(double deltaY);
         void setDeltaY(double deltaY, double angle);
+        void setWorldPosition(int x, int y);
+        void setUsesWorldPosition(bool usesPosition);
         void setEntityId(int entityId);
         void setTypeId(int entityId);
         void setAngle(double angle);
@@ -47,6 +52,9 @@ class Entity{
         double movementSpeed, maxMovementSpeed;
         double angle;
 
+        std::vector<int> entityWorldPosition;
+        bool usesWorldPosition;
+
         int entityId, typeId, random;
 
         int sheetColums, sheetRows;
@@ -54,6 +62,7 @@ class Entity{
         ALLEGRO_BITMAP *sheetImage, *frameImage;
         bool untilFinished, nextFrame;
         int rememberAnimationValue;
+        double rememberMultiplier;
         double multiplier;
 
         bool active;

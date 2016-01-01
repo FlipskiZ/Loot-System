@@ -6,8 +6,13 @@ Entity::Entity(){
     this->posY = 0;
     this->centerX = 0;
     this->centerY = 0;
+    this->deltaX = 0;
+    this->deltaY = 0;
     this->width = 0;
     this->height = 0;
+    this->entityWorldPosition.resize(2);
+    this->entityWorldPosition[0] = 0, this->entityWorldPosition[1] = 0;
+    this->usesWorldPosition = false;
     this->angle = 0;
     this->entityId = 0;
     this->typeId = 0;
@@ -44,6 +49,15 @@ double Entity::getMovementSpeed(){
 }
 double Entity::getDelta(int xory){
     return (xory == 0) ? this->deltaX : this->deltaY;
+}
+int Entity::getWorldPosition(int xory){
+    return (xory == 0) ? this->entityWorldPosition[0] : this->entityWorldPosition[1];
+}
+std::vector<int> Entity::getWorldPosition(){
+    return this->entityWorldPosition;
+}
+bool Entity::getUsesWorldPosition(){
+    return this->usesWorldPosition;
 }
 int Entity::getEntityId(){
     return this->entityId;
@@ -86,6 +100,13 @@ void Entity::setDeltaY(double deltaY){
 void Entity::setDeltaY(double deltaY, double angle){
     this->deltaY = deltaY*-cos(angle)*deltaTime;
 }
+void Entity::setWorldPosition(int x, int y){
+    this->entityWorldPosition[0] = x;
+    this->entityWorldPosition[1] = y;
+}
+void Entity::setUsesWorldPosition(bool usesPosition){
+    this->usesWorldPosition = usesPosition;
+}
 void Entity::setEntityId(int entityId){
     this->entityId = entityId;
 }
@@ -119,8 +140,9 @@ void Entity::setAnimationSpeed(double animationSpeed){
 }
 
 void Entity::setAnimationValue(int animationValue, bool untilFinished, double multiplier){
-    if(untilFinished){
-        this->rememberAnimationValue = animationValue;
+    if(untilFinished && !this->untilFinished){
+        this->rememberAnimationValue = this->animationValue;
+        this->rememberMultiplier = this->multiplier;
         this->untilFinished = true;
     }
     this->animationValue = animationValue;
@@ -131,11 +153,6 @@ void Entity::updateCenter(){
     this->centerX = this->posX + this->width/2, this->centerY = this->posY + this->height/2;
 }
 void Entity::updateAnimation(){
-
-    if(this->untilFinished){
-        this->animationValue = this->rememberAnimationValue;
-    }
-
     if(this->animationValue != this->animationValueHelper){
         this->animationCountHelper = this->animationCount;
         this->animationValueHelper = this->animationValue;
@@ -159,6 +176,7 @@ void Entity::updateAnimation(){
             this->frameX = 0;
             if(this->untilFinished){
                 this->untilFinished = false;
+                this->setAnimationValue(this->rememberAnimationValue, false, this->rememberMultiplier);
             }
         }
 

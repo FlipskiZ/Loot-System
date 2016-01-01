@@ -38,11 +38,19 @@ void PlayState::init(){
     for(int i = 0; i < livingList.size(); i++){
         livingList[i] = NULL;
     }
+    for(int i = 0; i < specialTileList.size(); i++){
+        specialTileList[i] = NULL;
+    }
     collisionDetection = unique_ptr<CollisionDetection>(new CollisionDetection(0, 0, 0, mapArrayWidth*tileSize, mapArrayHeight*tileSize)); //Level, PosX, PosY, Width, Height
-    lootSystem.createWeapon(1);
-    playerList[0]->equipWeapon(0);
 
-    enemyLevel = 1;
+    worldPosition.resize(2);
+    worldPosition[0] = 0, worldPosition[1] = 0;
+
+    changeWorldSegment(moveUp);
+    visitedWorldPositions.clear();
+    changeWorldSegment(moveDown);
+
+    currentLevel = 1;
 
     al_stop_samples();
 }
@@ -61,7 +69,7 @@ void PlayState::resume(){
 void PlayState::update(Engine* engine){
     collisionDetection->clearNode();
     for(int i = 0; i < livingList.size(); i++){
-        if(livingList[i] != NULL && livingList[i]->getActive()){
+        if(livingList[i] != NULL && livingList[i]->getActive() && livingList[i]->getWorldPosition() == worldPosition){
             collisionDetection->insertObjectInNode(i);
         }
     }
@@ -118,7 +126,7 @@ void PlayState::update(Engine* engine){
             playerList[0]->fireWeapon();
         }
     }
-
+    /*
     if(al_key_down(&keyState, ALLEGRO_KEY_G)){
         if(lastKeyPress != ALLEGRO_KEY_G){
         double width = 24, height = 24, movementSpeed = 64, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
@@ -136,7 +144,7 @@ void PlayState::update(Engine* engine){
 
         lastKeyPress = ALLEGRO_KEY_G;
         }
-    }
+    }*/
 
     if(al_key_down(&keyState, ALLEGRO_KEY_F5)){
         if(lastKeyPress != ALLEGRO_KEY_F5){
@@ -155,7 +163,13 @@ void PlayState::update(Engine* engine){
             //engine->changeState(PlayState::instance());
             lastKeyPress = ALLEGRO_KEY_ESCAPE;
         }
+    }else if(al_key_down(&keyState, ALLEGRO_KEY_E)){
+        if(lastKeyPress != ALLEGRO_KEY_E){
+            playerList[0]->playerUseKey();
+            lastKeyPress = ALLEGRO_KEY_E;
+        }
     }
+    /*
     if(al_key_down(&keyState, ALLEGRO_KEY_COMMA)){
         if(enemyLevel > 1){
             enemyLevel--;
@@ -164,7 +178,7 @@ void PlayState::update(Engine* engine){
         if(enemyLevel < 100){
             enemyLevel++;
         }
-    }
+    }*/
     //Player Input -
 
     //Update Entities +
@@ -186,6 +200,11 @@ void PlayState::update(Engine* engine){
     for(int i = 0; i < particleList.size(); i++){
         if(particleList[i] != NULL && particleList[i]->getActive()){
             particleList[i]->update();
+        }
+    }
+    for(int i = 0; i < specialTileList.size(); i++){
+        if(specialTileList[i] != NULL && specialTileList[i]->getActive()){
+            specialTileList[i]->update();
         }
     }
     /*for(int i = 0; i < MAX_BUTTONS; i++){
@@ -217,6 +236,11 @@ void PlayState::draw(Engine* engine){
     //Draw Map-
 
     //Draw Entities +
+    for(int i = 0; i < specialTileList.size(); i++){
+        if(specialTileList[i] != NULL && specialTileList[i]->getActive()){
+            specialTileList[i]->draw();
+        }
+    }
     for(int i = 0; i < missileList.size(); i++){
         if(missileList[i] != NULL && missileList[i]->getActive()){
             missileList[i]->draw();
@@ -242,11 +266,31 @@ void PlayState::draw(Engine* engine){
     //Draw GUI +
     al_draw_filled_rectangle(0, mapDisplayHeight, screenWidth, screenHeight, al_map_rgb(0,0,0));
 
+    //Draw Health Bar
+    al_draw_rectangle(2.5, mapDisplayHeight+2.5, 360-2.5, screenHeight-2.5, al_map_rgb(255,255,255), 5);
+    al_draw_filled_rectangle(5, mapDisplayHeight+5, (360-10)*(playerList[0]->getCurrentHP()/playerList[0]->getMaxHP())+5, screenHeight-5, al_map_rgb(215, 0, 0));
+    al_draw_textf(defaultFont, al_map_rgb(255, 255, 255), 360/2, mapDisplayHeight+(screenHeight-mapDisplayHeight)/2-al_get_font_ascent(defaultFont)/2, ALLEGRO_ALIGN_CENTER, "%.2f/%.2f", playerList[0]->getCurrentHP(), playerList[0]->getMaxHP());
+
+    //This is used for making a black to white transformation of the text as the health bar is going down. So that the text is black on the red and white on the black.
+    al_set_target_bitmap(healthText);
+    al_clear_to_color(al_map_rgba(0, 0, 0, 0));
+    al_draw_textf(defaultFont, al_map_rgb(0, 0, 0), 360/2, 0, ALLEGRO_ALIGN_CENTER, "%.2f/%.2f", playerList[0]->getCurrentHP(), playerList[0]->getMaxHP());
+    al_set_target_bitmap(al_get_backbuffer(display));
+
+    al_destroy_bitmap(healthTextHelper);
+    healthTextHelper = al_create_sub_bitmap(healthText, 0, 0, (360-10)*(playerList[0]->getCurrentHP()/playerList[0]->getMaxHP())+5, al_get_bitmap_height(healthText));
+
+    al_draw_bitmap(healthTextHelper, 0, mapDisplayHeight+(screenHeight-mapDisplayHeight)/2-al_get_font_ascent(defaultFont)/2, 0);
+    //Finish Drawing Health Bar
+
     fpsTimeNew = al_get_time();
     fpsCounter = 1/(fpsTimeNew - fpsTimeOld);
     fpsTimeOld = fpsTimeNew;
     al_draw_textf(defaultFont, (fpsCounter > 55) ? al_map_rgb(50, 150, 50) : (fpsCounter <= 55 && fpsCounter > 30) ? al_map_rgb(150, 150, 50) : al_map_rgb(150, 50, 50), screenWidth-95, mapDisplayHeight, NULL, "FPS: %d", (int)round(fpsCounter));
-    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+25, ALLEGRO_ALIGN_RIGHT, "Enemy Level: %d", enemyLevel);
+    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+25, ALLEGRO_ALIGN_RIGHT, "Current Level: %.2f", currentLevel);
+    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+50, ALLEGRO_ALIGN_RIGHT, "World Position X: %d Y: %d", worldPosition[0], worldPosition[1]);
 
-    collisionDetection->draw();
+    printf("Player X: %f Y: %f\n", playerList[0]->getPosition(0), playerList[0]->getPosition(1));
+
+    //collisionDetection->draw();
 }

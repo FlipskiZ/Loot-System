@@ -143,7 +143,7 @@ string LootSystem::getGunTypeName(int type){return gunType[type].name;}
 string LootSystem::getGunPrefixName(int prefix){return gunPrefix[prefix].name;}
 string LootSystem::getGunSuffixName(int suffix){return gunSuffix[suffix].name;}
 
-double LootSystem::getRandSpecialStrength(int special, int level){
+double LootSystem::getRandSpecialStrength(int special, double level){
     //Get a random strength depending on the type of special, level and weapon damage
     switch(special){
         case weaponFireStrength:
@@ -192,7 +192,7 @@ ALLEGRO_COLOR LootSystem::getRarityColor(int rarity){
     return al_map_rgb(255, 255, 255);
 }
 
-void LootSystem::createWeapon(int level){
+int LootSystem::createWeapon(double level){
     this->name = ""; //9 types of standard weapon statistics, 8 without the name
     fill(weaponStats.begin(), weaponStats.end(), 0);/*
     this->minDamage = 0;
@@ -314,8 +314,10 @@ void LootSystem::createWeapon(int level){
     newWeapon->setWeaponStats(this->weaponStats, this->name);
     newWeapon->setWeaponSpecials(this->weaponSpecials);
     newWeapon->setWeaponParts(this->weaponRarity, this->weaponType, this->weaponPrefix, this->weaponSuffix);
+    newWeapon->setItemLevel(level);
     int id = addWeaponToList(move(newWeapon));
-    if(playerList[0]->getInventoryUsed() < playerList[0]->getMaxInventorySpace()){
+    /*if(playerList[0]->getInventoryUsed() < playerList[0]->getMaxInventorySpace()){
         playerList[0]->addItemToInventory(id);
-    }
+    }*/
+    return id;
 }

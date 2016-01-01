@@ -10,8 +10,9 @@ class LivingPlayer : public LivingEntity{
         ~LivingPlayer(){}
         void update();
         void draw();
+        void playerUseKey();
         void fireWeapon();
-        void takeDamage(double damage, bool crit, double armorBypass = 0);
+        void takeDamage(double damage, bool crit = false, double armorBypass = 0);
         void takeDebuffDamage(double damage, int debuffID);
         void healHP(double health);
 
@@ -33,11 +34,18 @@ class LivingPlayer : public LivingEntity{
         int maxInventorySpace;
         std::vector<int> inventoryItemIDs;
 
-        int playerLevel, equippedWeapon;
+        double playerLevel;
+        int equippedWeapon;
 
         double fireRateHelper;
 
         std::vector<int> livingCollisions;
+
+        bool changedWorldSegment;
+
+        bool borderingChest;
+
+        bool weaponEquipped;
 };
 
 #endif // PLAYER_H

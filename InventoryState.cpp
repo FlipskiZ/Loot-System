@@ -39,7 +39,13 @@ void InventoryState::update(Engine* engine){
 
             lastKeyPress = ALLEGRO_KEY_ESCAPE;
         }
-    }else if(al_key_down(&keyState, ALLEGRO_KEY_G)){
+    }else if(al_key_down(&keyState, ALLEGRO_KEY_N)){
+        if(lastKeyPress != ALLEGRO_KEY_N){
+            playerList[0]->clearInventory();
+
+            lastKeyPress = ALLEGRO_KEY_N;
+        }
+    }/*else if(al_key_down(&keyState, ALLEGRO_KEY_G)){
         if(lastKeyPress != ALLEGRO_KEY_G){
             lootSystem.createWeapon(playerList[0]->getPlayerLevel());
 
@@ -53,15 +59,21 @@ void InventoryState::update(Engine* engine){
 
             lastKeyPress = ALLEGRO_KEY_G;
         }
-    }else if(al_key_down(&keyState, ALLEGRO_KEY_N)){
-        if(lastKeyPress != ALLEGRO_KEY_N){
-            playerList[0]->clearInventory();
+    }*/
 
-            lastKeyPress = ALLEGRO_KEY_N;
+    if(mouseButtonRightClick){
+        int inventoryItem = 0;
+        for(int i = 0; i < playerList[0]->getMaxInventorySpace(); i++){
+            inventoryItem = playerList[0]->getInventoryItem(i);
+            if(inventoryItem != -1 && itemList[inventoryItem] != NULL && itemList[inventoryItem]->getActive()){
+                if(checkCollision(mouseX, mouseY, itemList[inventoryItem]->getPosition(0), itemList[inventoryItem]->getPosition(1), 0, 0, itemList[inventoryItem]->getDimension(0), itemList[inventoryItem]->getDimension(1))){
+                    playerList[0]->removeItemFromInventory(inventoryItem);
+                }
+            }
         }
     }
 
-    if(al_key_down(&keyState, ALLEGRO_KEY_COMMA)){
+    /*if(al_key_down(&keyState, ALLEGRO_KEY_COMMA)){
         if(playerList[0]->getPlayerLevel() > 1){
             playerList[0]->setPlayerLevel(playerList[0]->getPlayerLevel()-1);
         }
@@ -69,7 +81,7 @@ void InventoryState::update(Engine* engine){
         if(playerList[0]->getPlayerLevel() < 100){
             playerList[0]->setPlayerLevel(playerList[0]->getPlayerLevel()+1);
         }
-    }
+    }*/
 
     int maxInventorySpace = playerList[0]->getMaxInventorySpace();
     int inventoryItem = 0;
@@ -105,7 +117,7 @@ void InventoryState::draw(Engine* engine){
         }
     }
 
-    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, 20, ALLEGRO_ALIGN_RIGHT, "Player Level: %d", playerList[0]->getPlayerLevel());
+    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, 20, ALLEGRO_ALIGN_RIGHT, "Current Level: %f", currentLevel);
 
     fpsTimeNew = al_get_time();
     fpsCounter = 1/(fpsTimeNew - fpsTimeOld);
