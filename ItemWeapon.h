@@ -22,7 +22,6 @@ class ItemWeapon : public Item{
         double getItemSpecial(int special);
         std::vector<double> getItemSpecials();
         int getItemRarity();
-
         void setWeaponStats(std::vector<double> weaponStats, std::string name);
         void setWeaponSpecials(std::vector<double> weaponSpecials);
         void setWeaponParts(int rarity, int type, int prefix, int suffix);

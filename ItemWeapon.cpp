@@ -131,8 +131,8 @@ void ItemWeapon::drawInformationBox(){
 
         al_draw_filled_rectangle(mouseX+offsetX, mouseY-smallBoxHeight, mouseX+offsetX+smallBoxWidth, mouseY, al_map_rgb(10, 10, 10));
         if(playerList[0]->getPlayerHasWeaponEquipped()){
-            al_draw_text(mediumFont, equippedRarityColor, mouseX+offsetX, mouseY-smallBoxHeight, 0, this->weaponName.c_str());
-            al_draw_textf(tinyFont, al_map_rgb(235, 190, 65), mouseX+offsetX, mouseY-smallBoxHeight+23, 0, "Item Level: %.2f", this->itemLevel);
+            al_draw_text(mediumFont, equippedRarityColor, mouseX+offsetX, mouseY-smallBoxHeight, 0, itemList[pW]->getItemName().c_str());
+            al_draw_textf(tinyFont, al_map_rgb(235, 190, 65), mouseX+offsetX, mouseY-smallBoxHeight+23, 0, "Item Level: %.2f", itemList[pW]->getItemLevel());
             al_draw_textf(tinyFont, equippedRarityColor, mouseX+offsetX, mouseY-smallBoxHeight+40, 0, "Damage: %.2f-%.2f", itemList[pW]->getItemStat(weaponMinDamage), itemList[pW]->getItemStat(weaponMaxDamage));
             al_draw_textf(tinyFont, equippedRarityColor, mouseX+offsetX, mouseY-smallBoxHeight+50, 0, "Fire Rate: %.2f shots/s", 1/itemList[pW]->getItemStat(weaponFireRate));
             al_draw_textf(tinyFont, equippedRarityColor, mouseX+offsetX, mouseY-smallBoxHeight+60, 0, "Shot Speed: %.2f tiles/s", itemList[pW]->getItemStat(weaponShotSpeed)/tileSize);
