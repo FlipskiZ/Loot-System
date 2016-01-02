@@ -236,85 +236,97 @@ void changeWorldSegment(int direction){
         bool foundPlace = false;
         int chestX = 0, chestY = 0;
 
-        do{
-            chestX = randInt(1, mapArrayWidth-2);
-            chestY = randInt(1, mapArrayHeight-2); //Never spawns at the sides of the map. So the the player doesn't get stuck when he goes into a new zone.
+        int amountChests = 1;
 
-            if(worldPosition[0] == 0 && worldPosition[1] == 0){ //Always spawns the starting chest near the player
-                chestX = 38;
-                chestY = 18;
+        if(worldPosition[0] != 0 || worldPosition[1] != 0){
+            double randomChance = randDouble();
+            if(randomChance < 0.75){
+                amountChests = 1;
+            }else if(randomChance < 0.95){
+                amountChests = 2;
+            }else{
+                amountChests = 3;
             }
-
-            if(isPassable(chestX*tileSize, chestY*tileSize, tileSize, tileSize)){
-                unique_ptr<TileContainer> newChest(new TileContainer());
-                newChest->setPos(chestX*tileSize, chestY*tileSize);
-                newChest->setDimensions(tileSize, tileSize);
-                newChest->setPassable(false);
-                newChest->setTileType(specialTileChest);
-                newChest->setWorldPosition(worldPosition[0], worldPosition[1]);
-                newChest->setUsesWorldPosition(true);
-                addSpecialTileToList(move(newChest));
-
-                mapArray[chestX][chestY] = specialTileChest;
-
-                foundPlace = true;
-            }
-        }while(!foundPlace);
-
-        int enemyX = 0, enemyY = 0;
-
-        double width = 24, height = 24, movementSpeed = 0, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
-        double maxHP = 0, armor = 0;
-
-        int amountEnemies = currentLevel+randInt(1,15);
-
-        bool colliding = false;
-
-        for(int i = 0; i < amountEnemies; i++){
-            foundPlace = false;
-            enemyX = 0, enemyY = 0;
-
-            maxHP = randInt(currentLevel*10, currentLevel*50), armor = randInt(currentLevel*2, currentLevel*5);
-            movementSpeed = 64+currentLevel+randDouble(0, 20);
-
-            do{
-                colliding = false;
-                enemyX = randDouble(1, mapArrayWidth*tileSize-2);
-                enemyY = randDouble(1, mapArrayHeight*tileSize-2); //Never spawns at the sides of the map. So the the player doesn't get stuck when he goes into a new zone.
-
-                if(isPassable(enemyX, enemyY, width, height) && !checkCollision(enemyX, enemyY, playerList[0]->getPosition(0), playerList[0]->getPosition(1), width, height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
-
-                    for(int i = 0; i < livingList.size(); i++){
-                        if(livingList[i] != NULL && livingList[i]->getActive() && livingList[i]->getWorldPosition() == worldPosition){
-                            if(checkCollision(enemyX, enemyY, livingList[i]->getPosition(0), livingList[i]->getPosition(1), width, height, livingList[i]->getDimension(0), livingList[i]->getDimension(1))){
-                                colliding = true;
-                                break;
-                            }
-                        }
-                    }
-                    if(!colliding){
-                        unique_ptr<LivingZombie> newZombie(new LivingZombie());
-                        newZombie->setPos(enemyX, enemyY);
-                        newZombie->setDimensions(width, height);
-                        newZombie->setMovementSpeed(movementSpeed);
-                        newZombie->setMaxHP(maxHP);
-                        newZombie->setArmor(armor);
-                        newZombie->setUsesWorldPosition(true);
-                        newZombie->setWorldPosition(worldPosition[0], worldPosition[1]);
-                        newZombie->setSheetDimensions(sheetColums, sheetRows, width, height);
-                        newZombie->setAnimationSpeed(animationSpeed);
-                        newZombie->setBitmap(zombieImage);
-                        addZombieToList(move(newZombie));
-                        foundPlace = true;
-                    }
-                }
-            }while(!foundPlace);
         }
 
-        vector<int> visited(2);
-        visited[0] = worldPosition[0];
-        visited[1] = worldPosition[1];
-        visitedWorldPositions.push_back(visited);
+        for(int i = 0; i < amountChests; i++){
+            do{
+                chestX = randInt(1, mapArrayWidth-2);
+                chestY = randInt(1, mapArrayHeight-2); //Never spawns at the sides of the map. So the the player doesn't get stuck when he goes into a new zone.
+
+                if(worldPosition[0] == 0 && worldPosition[1] == 0){ //Always spawns the starting chest near the player
+                    chestX = 38;
+                    chestY = 18;
+                }
+
+                if(isPassable(chestX*tileSize, chestY*tileSize, tileSize, tileSize)){
+                    unique_ptr<TileContainer> newChest(new TileContainer());
+                    newChest->setPos(chestX*tileSize, chestY*tileSize);
+                    newChest->setDimensions(tileSize, tileSize);
+                    newChest->setPassable(false);
+                    newChest->setTileType(specialTileChest);
+                    newChest->setWorldPosition(worldPosition[0], worldPosition[1]);
+                    newChest->setUsesWorldPosition(true);
+                    addSpecialTileToList(move(newChest));
+
+                    mapArray[chestX][chestY] = specialTileChest;
+
+                    foundPlace = true;
+                }
+            }while(!foundPlace);
+
+            int enemyX = 0, enemyY = 0;
+
+            double width = 24, height = 24, movementSpeed = 0, sheetColums = 4, sheetRows = 3, animationSpeed = 0.25;
+            double maxHP = 0, armor = 0;
+
+            int amountEnemies = currentLevel+randInt(1,15);
+
+            bool colliding = false;
+
+            for(int i = 0; i < amountEnemies; i++){
+                foundPlace = false;
+                enemyX = 0, enemyY = 0;
+
+                maxHP = randInt(currentLevel*10, currentLevel*50), armor = randInt(currentLevel*2, currentLevel*5);
+                movementSpeed = 64+currentLevel+randDouble(0, 20);
+
+                do{
+                    colliding = false;
+                    enemyX = randDouble(1, mapArrayWidth*tileSize-2);
+                    enemyY = randDouble(1, mapArrayHeight*tileSize-2); //Never spawns at the sides of the map. So the the player doesn't get stuck when he goes into a new zone.
+
+                    if(isPassable(enemyX, enemyY, width, height) && !checkCollision(enemyX, enemyY, playerList[0]->getPosition(0), playerList[0]->getPosition(1), width, height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
+
+                        for(int i = 0; i < livingList.size(); i++){
+                            if(livingList[i] != NULL && livingList[i]->getActive() && livingList[i]->getWorldPosition() == worldPosition){
+                                if(checkCollision(enemyX, enemyY, livingList[i]->getPosition(0), livingList[i]->getPosition(1), width, height, livingList[i]->getDimension(0), livingList[i]->getDimension(1))){
+                                    colliding = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!colliding){
+                            unique_ptr<LivingZombie> newZombie(new LivingZombie());
+                            newZombie->setPos(enemyX, enemyY);
+                            newZombie->setDimensions(width, height);
+                            newZombie->setMovementSpeed(movementSpeed);
+                            newZombie->setMaxHP(maxHP);
+                            newZombie->setArmor(armor);
+                            newZombie->setUsesWorldPosition(true);
+                            newZombie->setWorldPosition(worldPosition[0], worldPosition[1]);
+                            newZombie->setSheetDimensions(sheetColums, sheetRows, width, height);
+                            newZombie->setAnimationSpeed(animationSpeed);
+                            newZombie->setBitmap(zombieImage);
+                            addZombieToList(move(newZombie));
+                            foundPlace = true;
+                        }
+                    }
+                }while(!foundPlace);
+            }
+
+            visitedWorldPositions.push_back(temp);
+        }
     }
 
 

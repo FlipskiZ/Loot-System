@@ -44,11 +44,11 @@ void PlayState::init(){
     collisionDetection = unique_ptr<CollisionDetection>(new CollisionDetection(0, 0, 0, mapArrayWidth*tileSize, mapArrayHeight*tileSize)); //Level, PosX, PosY, Width, Height
 
     worldPosition.resize(2);
-    worldPosition[0] = 0, worldPosition[1] = 0;
+    worldPosition[0] = 0, worldPosition[1] = -1;
 
-    changeWorldSegment(moveUp);
-    visitedWorldPositions.clear();
     changeWorldSegment(moveDown);
+
+    playerList[0]->setPos(mapArrayWidth*tileSize/2-width/2, mapArrayHeight*tileSize/2-height/2);
 
     currentLevel = 1;
 
