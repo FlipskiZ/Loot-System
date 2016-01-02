@@ -23,17 +23,21 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     display = al_create_display(screenWidth, screenHeight);
     al_set_window_title(display, title);
 
-    bigFont = al_load_font("fonts/pixelFont.ttf", 48, 0);
-    defaultFont = al_load_font("fonts/pixelFont.ttf", 24, 0);
-    smallFont = al_load_font("fonts/pixelFont.ttf", 16, 0);
+    bigFont = al_load_font("fonts/PixelFont.ttf", 48, 0);
+    defaultFont = al_load_font("fonts/PixelFont.ttf", 24, 0);
+    mediumFont = al_load_font("fonts/Munro.ttf", 20, 0);
+    smallFont = al_load_font("fonts/PixelFont.ttf", 16, 0);
+    smallerFont = al_load_font("fonts/Munro.ttf", 14, 0);
+    tinyFont = al_load_font("fonts/Munro.ttf", 10, 0);
 
     cursorImage = al_load_bitmap("graphics/cursorImage.png");
     playerImage = al_load_bitmap("graphics/playerImage.png");
     bulletImage = al_load_bitmap("graphics/bulletImage.png");
     explosionImage = al_load_bitmap("graphics/explosionImage.png");
     zombieImage = al_load_bitmap("graphics/zombieImage.png");
+    arrowImage = al_load_bitmap("graphics/arrowImage.png");
 
-    healthText = al_create_bitmap(360, al_get_font_ascent(defaultFont));
+    healthText = al_create_bitmap(360, al_get_font_line_height(defaultFont));
 
     al_reserve_samples(0); //Amount of sounds to load in the game
 
@@ -63,6 +67,8 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     drawScreen = false, timerEvent = false, done = false, mouseButtonLeft = false, mouseButtonLeftClick = false, mouseButtonRight = false, mouseButtonRightClick = false, inGame = false;
     mouseX = 0, mouseY = 0, volumeLevel = 1;
     lastKeyPress = 0, mouseWheel = 0;
+
+    compareWeapons = false;
 
     loadMapArray();
 

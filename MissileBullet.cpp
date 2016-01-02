@@ -129,7 +129,14 @@ void MissileBullet::update(){
             }
 
             if(this->bulletSpecials[weaponVampirism] > 0){
-                playerList[0]->healHP(damage*this->bulletSpecials[weaponVampirism]);
+                double healDamage = damage;
+                if(damage > 1){
+                     healDamage -= livingList[loopPenetratedEnemies[i]]->getArmor();
+                     if(healDamage < 1){
+                        healDamage = 1;
+                     }
+                }
+                playerList[0]->healHP(healDamage*this->bulletSpecials[weaponVampirism]);
             }
 
             if(this->bulletSpecials[weaponFireStrength] > 0){

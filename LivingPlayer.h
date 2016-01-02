@@ -21,6 +21,7 @@ class LivingPlayer : public LivingEntity{
         int getInventoryUsed();
         int getPlayerLevel(){return this->playerLevel;}
         int getPlayerEquippedWeapon(){return this->equippedWeapon;}
+        bool getPlayerHasWeaponEquipped(){return this->weaponEquipped;}
 
         void setPlayerLevel(int level){this->playerLevel = level;}
         void setMaxInventorySpace(int maxInventorySpace);

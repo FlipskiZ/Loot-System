@@ -16,6 +16,7 @@ class Item : public Entity{
         virtual std::vector<double> getItemStats() = 0;
         virtual double getItemSpecial(int special) = 0;
         virtual std::vector<double> getItemSpecials() = 0;
+        virtual int getItemRarity() = 0;
 
         void setItemLevel(double level);
 

@@ -27,6 +27,8 @@ void InventoryState::resume(){
 }
 
 void InventoryState::update(Engine* engine){
+    compareWeapons = false;
+
     if(al_key_down(&keyState, ALLEGRO_KEY_I)){
         if(lastKeyPress != ALLEGRO_KEY_I){
             engine->popState();
@@ -60,6 +62,10 @@ void InventoryState::update(Engine* engine){
             lastKeyPress = ALLEGRO_KEY_G;
         }
     }*/
+
+    if(al_key_down(&keyState, ALLEGRO_KEY_LSHIFT)){
+        compareWeapons = true;
+    }
 
     if(mouseButtonRightClick){
         int inventoryItem = 0;

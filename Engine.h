@@ -143,13 +143,17 @@ extern ALLEGRO_DISPLAY *display;
 
 extern ALLEGRO_FONT *bigFont;
 extern ALLEGRO_FONT *defaultFont;
+extern ALLEGRO_FONT *mediumFont;
 extern ALLEGRO_FONT *smallFont;
+extern ALLEGRO_FONT *smallerFont;
+extern ALLEGRO_FONT *tinyFont;
 
 extern ALLEGRO_BITMAP *cursorImage;
 extern ALLEGRO_BITMAP *playerImage;
 extern ALLEGRO_BITMAP *bulletImage;
 extern ALLEGRO_BITMAP *explosionImage;
 extern ALLEGRO_BITMAP *zombieImage;
+extern ALLEGRO_BITMAP *arrowImage;
 
 extern ALLEGRO_BITMAP *healthText;
 extern ALLEGRO_BITMAP *healthTextHelper;
@@ -184,6 +188,8 @@ extern double cameraPosX, cameraPosY, cameraOffsetX, cameraOffsetY, mapDisplayOf
 extern bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick, mouseButtonRight, mouseButtonRightClick, inGame;
 extern double mouseX, mouseY, volumeLevel;
 extern int lastKeyPress, mouseWheel;
+
+extern bool compareWeapons;
 
 extern double currentLevel;
 

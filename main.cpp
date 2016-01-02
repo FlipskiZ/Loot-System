@@ -32,13 +32,17 @@ ALLEGRO_DISPLAY *display;
 
 ALLEGRO_FONT *bigFont;
 ALLEGRO_FONT *defaultFont;
+ALLEGRO_FONT *mediumFont;
 ALLEGRO_FONT *smallFont;
+ALLEGRO_FONT *smallerFont;
+ALLEGRO_FONT *tinyFont;
 
 ALLEGRO_BITMAP *cursorImage;
 ALLEGRO_BITMAP *playerImage;
 ALLEGRO_BITMAP *bulletImage;
 ALLEGRO_BITMAP *explosionImage;
 ALLEGRO_BITMAP *zombieImage;
+ALLEGRO_BITMAP *arrowImage;
 
 ALLEGRO_BITMAP *healthText;
 ALLEGRO_BITMAP *healthTextHelper;
@@ -74,6 +78,8 @@ double cameraPosX, cameraPosY, cameraOffsetX, cameraOffsetY, mapDisplayOffsetX, 
 bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick, mouseButtonRight, mouseButtonRightClick, inGame;
 double mouseX, mouseY, volumeLevel;
 int lastKeyPress, mouseWheel = 0;
+
+bool compareWeapons;
 
 double currentLevel;
 

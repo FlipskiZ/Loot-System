@@ -13,6 +13,7 @@ void TileContainer::update(){
     if(this->entityWorldPosition != worldPosition && this->usesWorldPosition){
         return;
     }
+    this->updateCenter();
 }
 
 void TileContainer::draw(){

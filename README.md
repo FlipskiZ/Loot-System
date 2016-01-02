@@ -12,6 +12,7 @@ I - Inventory
 In the inventory:
 
 N - Clear inventory
+Left Shift - Compare item to currently equipped item
 Left mouse button - Equip selected weapon
 Right mouse button - delete selected weapon
 ESC or I - exit inventory

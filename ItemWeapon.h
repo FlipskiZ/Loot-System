@@ -13,6 +13,7 @@ class ItemWeapon : public Item{
         ~ItemWeapon(){}
         void draw();
         void update();
+        void drawInformationBox();
 
         bool getHoveringOver();
         std::string getItemName();
@@ -20,6 +21,7 @@ class ItemWeapon : public Item{
         std::vector<double> getItemStats();
         double getItemSpecial(int special);
         std::vector<double> getItemSpecials();
+        int getItemRarity();
 
         void setWeaponStats(std::vector<double> weaponStats, std::string name);
         void setWeaponSpecials(std::vector<double> weaponSpecials);

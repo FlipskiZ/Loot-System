@@ -283,6 +283,39 @@ void PlayState::draw(Engine* engine){
     al_draw_bitmap(healthTextHelper, 0, mapDisplayHeight+(screenHeight-mapDisplayHeight)/2-al_get_font_ascent(defaultFont)/2, 0);
     //Finish Drawing Health Bar
 
+    //This is used to draw a rotating arrow that points to the nearest chest.
+    int closestChestId = 0;
+    double distanceFromPlayer = INT_MAX;
+    double oldClosestDistace = INT_MAX;
+    bool chestExists = false;
+
+    for(int i = 0; i < specialTileList.size(); i++){
+        if(specialTileList[i] != NULL && specialTileList[i]->getActive() && specialTileList[i]->getWorldPosition() == worldPosition){
+            chestExists = true;
+
+            distanceFromPlayer = pow(abs(specialTileList[i]->getCenterPosition(0)-playerList[0]->getCenterPosition(0)), 2) + pow(abs(specialTileList[i]->getCenterPosition(1)-playerList[0]->getCenterPosition(1)), 2);
+
+            if(distanceFromPlayer < oldClosestDistace){
+                closestChestId = i;
+                oldClosestDistace = distanceFromPlayer;
+            }
+        }
+    }
+
+    if(chestExists){
+        double cX = playerList[0]->getDimension(0), cY = playerList[0]->getDimension(0);
+        double oX = playerList[0]->getPosition(0)+cameraOffsetX+playerList[0]->getDimension(0)/2, oY = playerList[0]->getPosition(1)+cameraOffsetY+playerList[0]->getDimension(1)/2;
+
+        double angle = -atan2(playerList[0]->getCenterPosition(0)-specialTileList[closestChestId]->getCenterPosition(0), playerList[0]->getCenterPosition(1)-specialTileList[closestChestId]->getCenterPosition(1));
+        double angleSin = sin(angle), angleCos = -cos(angle);
+
+        oX += angleSin*cX;
+        oY += angleCos*cY;
+
+        al_draw_rotated_bitmap(arrowImage, 8, 8, oX, oY, angle, 0);
+    }
+    //Finish drawing the arrow
+
     fpsTimeNew = al_get_time();
     fpsCounter = 1/(fpsTimeNew - fpsTimeOld);
     fpsTimeOld = fpsTimeNew;
