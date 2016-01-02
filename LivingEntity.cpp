@@ -81,7 +81,9 @@ void LivingEntity::updateDebuffs(){
                     this->movementSpeed = 0;
                     break;
                 case debuffSlowed:
-                    this->movementSpeed = this->maxMovementSpeed*(1-this->livingDebuffs[i][0]);
+                    if(!this->livingDebuffs[debuffElectrified].empty()){
+                        this->movementSpeed = this->maxMovementSpeed*(1-this->livingDebuffs[i][0]);
+                    }
                     break;
             }
             this->livingDebuffs[i][1] -= deltaTime;

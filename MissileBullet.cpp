@@ -243,6 +243,8 @@ void MissileBullet::update(){
                 newBullet->setAngle(angleConeStart+angleSlice*i+randDouble(angleVariationStart, angleVariationStart+maxAngle)*(1-angleVariation));
                 newBullet->setMissileStats(this->bulletStats);
                 newBullet->setMissileSpecials(this->bulletSpecials);
+                newBullet->setWorldPosition(this->entityWorldPosition[0], this->entityWorldPosition[1]);
+                newBullet->setUsesWorldPosition(true);
                 newBullet->setSheetDimensions(this->sheetColums, this->sheetRows, this->width, this->height);
                 newBullet->setAnimationSpeed(this->animationCount);
                 newBullet->setBitmap(bulletImage);

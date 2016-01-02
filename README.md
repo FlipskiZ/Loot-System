@@ -21,7 +21,7 @@ Gameplay:
 
 Enemies attack you if they get too close, first they will try to scratch you and then they will try to bite you if they are close enough.
 
-If you move to the side of the map, you will move to a new segment of the world map. With new enemies and weapons.
+If you move to the edge of the map, you will move to a new segment of the world map. With new enemies and weapons.
 
 Every world segment there is a chest randomly spawned on the map, with the exception of the first chest which will always be in the same position.
 

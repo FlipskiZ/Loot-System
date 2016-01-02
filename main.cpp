@@ -293,8 +293,8 @@ void changeWorldSegment(int direction){
 
                 do{
                     colliding = false;
-                    enemyX = randDouble(1, mapArrayWidth*tileSize-2);
-                    enemyY = randDouble(1, mapArrayHeight*tileSize-2); //Never spawns at the sides of the map. So the the player doesn't get stuck when he goes into a new zone.
+                    enemyX = randDouble(width*2, mapArrayWidth*tileSize-2*width);
+                    enemyY = randDouble(height*2, mapArrayHeight*tileSize-2*height); //Never spawns at the sides of the map. So the the player doesn't get stuck when he goes into a new zone.
 
                     if(isPassable(enemyX, enemyY, width, height) && !checkCollision(enemyX, enemyY, playerList[0]->getPosition(0), playerList[0]->getPosition(1), width, height, playerList[0]->getDimension(0), playerList[0]->getDimension(1))){
 

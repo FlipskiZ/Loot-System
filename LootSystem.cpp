@@ -17,7 +17,7 @@ struct WEAPON_STATS{
 //Name - Min Damage - Max Damage - Fire Rate - Shot Speed - Accuracy - Crit Chance - Crit Strength - Armor Penetration - Additional Special (ex. shotgun has multiple bullets, laser has burning etc.)
 
 vector<WEAPON_STATS> gunType = { //Constant Numbers. The further in the array they are, the better/more unique they should be.
-    {"Pistol", 1, 1, 0.5, 256, 0.95, 0, 1, 0, weaponSpecialNone},
+    {"Pistol", 1, 1, 0.5, 256, 0.95, 0, 1, 0.35, weaponSpecialNone},
     {"Rifle", 2, 3, 1, 1024, 1, 0.1, 1.5, 0.2, weaponSpecialNone},
     {"Shotgun", 2, 3, 1, 512, 0, 0.15, 1.75, 0.25, weaponAdditionalBullets},
     {"Machine Gun", 1, 2, 0.0625, 512, 0.9, 0.05, 1.25, 0.1, weaponSpecialNone},

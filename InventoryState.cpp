@@ -123,7 +123,7 @@ void InventoryState::draw(Engine* engine){
         }
     }
 
-    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, 20, ALLEGRO_ALIGN_RIGHT, "Current Level: %f", currentLevel);
+    al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, 20, ALLEGRO_ALIGN_RIGHT, "Current Level: %.2f", currentLevel);
 
     fpsTimeNew = al_get_time();
     fpsCounter = 1/(fpsTimeNew - fpsTimeOld);
