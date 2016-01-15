@@ -324,7 +324,5 @@ void PlayState::draw(Engine* engine){
     al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+25, ALLEGRO_ALIGN_RIGHT, "Current Level: %.2f", currentLevel);
     al_draw_textf(defaultFont, al_map_rgb(127, 127, 127), screenWidth, mapDisplayHeight+50, ALLEGRO_ALIGN_RIGHT, "World Position X: %d Y: %d", worldPosition[0], worldPosition[1]);
 
-    printf("Player X: %f Y: %f\n", playerList[0]->getPosition(0), playerList[0]->getPosition(1));
-
     //collisionDetection->draw();
 }

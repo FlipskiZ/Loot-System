@@ -11,11 +11,11 @@ class TileContainer : public SpecialTile{
         void draw();
         void update();
 
-        std::vector<int> getContainedWeapons();
+        std::vector<int> getContainedItems();
     protected:
     private:
         LootSystem lootSystem;
-        std::vector<int> containedWeapons;
+        std::vector<int> containedItems;
 };
 
 #endif // TILECONTAINER_H

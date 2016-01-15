@@ -9,6 +9,7 @@
 class Item : public Entity{
     public:
         Item();
+        virtual void drawInformationBox() = 0;
 
         virtual bool getHoveringOver() = 0;
         virtual std::string getItemName() = 0;
@@ -17,6 +18,7 @@ class Item : public Entity{
         virtual double getItemSpecial(int special) = 0;
         virtual std::vector<double> getItemSpecials() = 0;
         virtual int getItemRarity() = 0;
+        virtual int getItemPiece() = 0;
 
         void setItemLevel(double level);
 

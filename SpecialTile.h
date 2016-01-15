@@ -14,7 +14,7 @@ class SpecialTile : public Entity{
         bool getPassable();
         int getTileType();
 
-        virtual std::vector<int> getContainedWeapons() = 0;
+        virtual std::vector<int> getContainedItems() = 0;
     protected:
         bool tilePassable;
 

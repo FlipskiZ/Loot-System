@@ -34,6 +34,7 @@
 #include "EntityParticle.h"
 
 #include "ItemWeapon.h"
+#include "ItemArmor.h"
 #include "TileContainer.h"
 
 #define PI 3.14159265359
@@ -93,11 +94,40 @@ enum weaponSpecials{
     AMOUNT_WEAPON_SPECIALS //Amount of entries
 };
 
+enum armorPiece{
+    armorPieceNone = -1,
+    armorHelmet = 0,
+    armorChestArmor,
+    armorGloves,
+    armorPants,
+    armorBoots,
+    armorCape,
+    AMOUNT_ARMOR_PIECES
+};
+
+enum armorStats{
+    armorStatNone = -1, //None
+    armorValue = 0,
+    armorEncumbranceRating,
+    AMOUNT_ARMOR_STATS //Amount of entries
+};
+
+enum armorSpecials{
+    armorSpecialNone = -1, //None
+    armorAdditionalMovementSpeed = 0, //Additional Movement Speed
+    armorDamageReflection, //Percentage damage reflected back to attacker
+    armorAdditionalLife, //Additional Life
+    armorRetributionDamage, //Amount damage given to attacker
+    armorSlowAuraStrength, //Aura around the player that slows enemies
+    armorFireAuraStrength, //Aura around the player that damages enemies
+    AMOUNT_ARMOR_SPECIALS //Amount of entries
+};
+
 enum particlePatterns{
     patternNone = -1,
     patternHomeToPlayer = 0,
     patternHomeToMouse,
-    patternKeepMomentum,
+    patternFriction,
     patternGravity,
 };
 
@@ -115,6 +145,7 @@ enum buffs{
 };
 
 void changeWorldSegment(int direction);
+void updateInventoryPlacement();
 
 string itos(int arg); //converts an integer to a std::string
 string dtos(double arg); //converts an float to a std::string
@@ -123,6 +154,7 @@ bool checkCollision(double x, double y, double ex, double ey, double width, doub
 bool insideMap(double x, double y, double width, double height);
 int addButtonToList(unique_ptr<Button> &&newButton);
 int addWeaponToList(unique_ptr<ItemWeapon> &&newWeapon);
+int addArmorToList(unique_ptr<ItemArmor> &&newArmor);
 int addBulletToList(unique_ptr<MissileBullet> &&newBullet);
 int addZombieToList(unique_ptr<LivingZombie> &&newZombie);
 int addParticleToList(unique_ptr<EntityParticle> &&newParticle);
@@ -132,6 +164,8 @@ void saveMapArray();
 void drawMap();
 void drawTile(double x, double y, int tileId);
 void updateCamera();
+
+extern LootSystem lootSystem;
 
 inline int randInt(int x,int y){return rand()%(y-x+1)+x;} //returns a random integer between x and y
 
@@ -189,7 +223,9 @@ extern bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick,
 extern double mouseX, mouseY, volumeLevel;
 extern int lastKeyPress, mouseWheel;
 
-extern bool compareWeapons;
+extern int drawItemIDInformationBox;
+
+extern bool compareItems;
 
 extern double currentLevel;
 

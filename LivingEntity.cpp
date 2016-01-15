@@ -38,10 +38,14 @@ void LivingEntity::setArmor(double armor){
     this->livingArmor = armor;
 }
 void LivingEntity::addDebuff(int debuffID, double debuffStrength, double debuffDuration){
+    double appliedTime = al_get_time();
+    if(!this->livingDebuffs[debuffID].empty()){
+        appliedTime = this->livingDebuffs[debuffID][2];
+    }
     this->livingDebuffs[debuffID].clear();
     this->livingDebuffs[debuffID].push_back(debuffStrength);
     this->livingDebuffs[debuffID].push_back(debuffDuration);
-    this->livingDebuffs[debuffID].push_back(al_get_time());
+    this->livingDebuffs[debuffID].push_back(appliedTime);
 
     if(debuffID == debuffElectrified){
         this->takeDebuffDamage(this->livingDebuffs[debuffID][0], debuffID);

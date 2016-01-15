@@ -2,6 +2,7 @@
 #include "MenuState.h"
 #include "GameState.h"
 #include "PlayState.h"
+#include "InventoryState.h"
 
 Button::Button(){
     this->clicked = false;

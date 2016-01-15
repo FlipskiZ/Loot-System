@@ -2,6 +2,7 @@
 #include "MenuState.h"
 #include "GameState.h"
 #include "PlayState.h"
+#include "InventoryState.h"
 
 //Initalization +
 struct TILE_TYPE{
@@ -9,6 +10,7 @@ struct TILE_TYPE{
 };
 
 void changeWorldSegment(int direction);
+void updateInventoryPlacement();
 
 string itos(int arg); //converts an integer to a std::string
 string dtos(double arg); //converts an float to a std::string
@@ -18,6 +20,7 @@ bool checkCollision(double x, double y, double ex, double ey, double width, doub
 bool insideMap(double x, double y, double width, double height);
 int addButtonToList(unique_ptr<Button> &&newButton);
 int addWeaponToList(unique_ptr<ItemWeapon> &&newWeapon);
+int addArmorToList(unique_ptr<ItemArmor> &&newArmor);
 int addBulletToList(unique_ptr<MissileBullet> &&newBullet);
 int addZombieToList(unique_ptr<LivingZombie> &&newZombie);
 int addParticleToList(unique_ptr<EntityParticle> &&newParticle);
@@ -64,6 +67,8 @@ unique_ptr<CollisionDetection> collisionDetection;
 
 Engine engine;
 
+LootSystem lootSystem;
+
 double screenWidth, screenHeight, mapDisplayWidth, mapDisplayHeight, mapArrayWidth, mapArrayHeight;
 int tileSize;
 int MAX_BUTTONS, MAX_PLAYERS, MAX_ITEMS, MAX_MISSILES, MAX_LIVING, MAX_PARTICLES, MAX_SPECIAL_TILES, MAX_TREE_OBJECTS, MAX_TREE_LEVELS;
@@ -79,7 +84,9 @@ bool drawScreen, timerEvent, done, mouseButtonLeft, mouseButtonLeftClick, mouseB
 double mouseX, mouseY, volumeLevel;
 int lastKeyPress, mouseWheel = 0;
 
-bool compareWeapons;
+int drawItemIDInformationBox;
+
+bool compareItems;
 
 double currentLevel;
 
@@ -288,7 +295,7 @@ void changeWorldSegment(int direction){
                 foundPlace = false;
                 enemyX = 0, enemyY = 0;
 
-                maxHP = randInt(currentLevel*10, currentLevel*50), armor = randInt(currentLevel*2, currentLevel*5);
+                maxHP = randInt(currentLevel*5, currentLevel*20), armor = randInt(currentLevel, currentLevel*2);
                 movementSpeed = 64+currentLevel+randDouble(0, 20);
 
                 do{
@@ -335,6 +342,30 @@ void changeWorldSegment(int direction){
     for(int i = 0; i < specialTileList.size(); i++){
         if(specialTileList[i] != NULL && specialTileList[i]->getActive() && worldPosition == specialTileList[i]->getWorldPosition() && !specialTileList[i]->getPassable()){
             specialTileList[i]->createImpassableSpace();
+        }
+    }
+}
+
+void updateInventoryPlacement(){
+    int inventoryItem = 0;
+    for(int i = 0; i < playerList[0]->getMaxInventorySpace(); i++){
+        inventoryItem = playerList[0]->getInventoryItem(i);
+        if(inventoryItem != -1 && itemList[inventoryItem] != NULL && itemList[inventoryItem]->getActive()){
+            itemList[inventoryItem]->setPos((i%10)*68+16, ((trunc((double)i/10))+5)*68+16); //Sets the weapon positions according to their location in the inventory vector
+        }
+    }
+
+    int equipmentPiece = 0;
+    for(int i = 0; i < AMOUNT_ARMOR_PIECES+1; i++){
+        if(i == 0){
+            equipmentPiece = playerList[0]->getPlayerEquippedWeapon();
+        }else{
+            equipmentPiece = playerList[0]->getPlayerEquippedArmor(i-1);
+        }
+        if(equipmentPiece != -1 && itemList[equipmentPiece] != NULL && itemList[equipmentPiece]->getActive() && ( (i == 0 && playerList[0]->getPlayerHasWeaponEquipped()) || (
+                i > 0 && playerList[0]->getPlayerHasArmorEquipped(i-1)))){
+
+            itemList[equipmentPiece]->setPos((i%(AMOUNT_ARMOR_PIECES+1))*68+16, ((trunc((double)i/10))+3)*68+16); //Sets the weapon positions according to their location in the inventory vector
         }
     }
 }
@@ -460,6 +491,20 @@ int addWeaponToList(unique_ptr<ItemWeapon> &&newWeapon){
         }else if(itemList[i] == NULL || (i < MAX_ITEMS && !itemList[i]->getActive())){
             newWeapon->setEntityId(i);
             itemList[i] = move(newWeapon);
+            return i;
+        }
+    }
+}
+
+int addArmorToList(unique_ptr<ItemArmor> &&newArmor){
+    for(int i = 0; i < itemList.size()+1; i++){
+        if(i < MAX_ITEMS && i >= itemList.size()){
+            newArmor->setEntityId(i);
+            itemList.push_back(move(newArmor));
+            return i;
+        }else if(itemList[i] == NULL || (i < MAX_ITEMS && !itemList[i]->getActive())){
+            newArmor->setEntityId(i);
+            itemList[i] = move(newArmor);
             return i;
         }
     }

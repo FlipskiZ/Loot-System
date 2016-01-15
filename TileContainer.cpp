@@ -2,11 +2,15 @@
 #include "Engine.h"
 
 TileContainer::TileContainer(){
-    containedWeapons.push_back(lootSystem.createWeapon(currentLevel));
+    if(rand() % 2 == 0){
+        containedItems.push_back(lootSystem.createWeapon(currentLevel));
+    }else{
+        containedItems.push_back(lootSystem.createArmor(currentLevel));
+    }
 }
 
-vector<int> TileContainer::getContainedWeapons(){
-    return this->containedWeapons;
+vector<int> TileContainer::getContainedItems(){
+    return this->containedItems;
 }
 
 void TileContainer::update(){

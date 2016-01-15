@@ -12,6 +12,7 @@ class LootSystem{
         ~LootSystem(){}
         void init();
         int createWeapon(double level); //Return a weapon object in the future
+        int createArmor(double level); //Return a weapon object in the future
 
         double getGunType(int type, int element);
         int getGunTypeAdditionalSpecial(int type);
@@ -22,7 +23,19 @@ class LootSystem{
         std::string getGunPrefixName(int prefix);
         std::string getGunSuffixName(int suffix);
 
-        double getRandSpecialStrength(int special, double level);
+        double getRandWeaponSpecialStrength(int special, double level);
+
+        double getArmorType(int type, int element);
+        int getArmorTypeAdditionalSpecial(int type);
+        int getArmorTypeArmorPiece(int type);
+        double getArmorPrefix(int type, int element);
+        double getArmorSuffix(int type, int element);
+
+        std::string getArmorTypeName(int type);
+        std::string getArmorPrefixName(int prefix);
+        std::string getArmorSuffixName(int suffix);
+
+        double getRandArmorSpecialStrength(int special, double level);
 
         ALLEGRO_COLOR getRarityColor(int rarity);
     protected:
@@ -33,7 +46,7 @@ class LootSystem{
         int weaponSuffix;
 
         //Standard Weapon Statistics
-        std::string name;
+        std::string weaponName;
         std::vector<double> weaponStats;/*
         double minDamage;
         double maxDamage;
@@ -58,6 +71,28 @@ class LootSystem{
         double vampirism; //Steals a percentage of the base damage dealt every bullet hit
         double executionTreshold; //Instant kill at health percantage
         double penetrationAmount; //Amount of times the bullet can penetrate enemies*/
+
+        int armorRarity; //Normal - Uncommon - Rare - Epic - Legendary - Unique
+        int armorType;
+        int armorPrefix;
+        int armorSuffix;
+
+        //Standard Weapon Statistics
+        std::string armorName;
+        int armorPiece;
+        std::vector<double> armorStats;/*
+        double armorPiece;
+        double armorValue;
+        double encumberanceRating;*/
+
+        //Special modification. Decided by rarity
+        std::vector<double> armorSpecials;/*
+        armorAdditionalMovementSpeed = 0, //Additional Movement Speed
+        armorDamageReflection, //Percentage damage reflected back to attacker
+        armorAdditionalLife, //Additional Life
+        armorRetributionDamage, //Amount damage given to attacker
+        armorSlowAuraStrength, //Aura around the player that slows enemies
+        armorFireAuraStrength, //Aura around the player that damages enemies*/
 };
 
 #endif // LOOTSYSTEM_H

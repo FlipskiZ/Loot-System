@@ -1,16 +1,15 @@
-#ifndef ITEMWEAPON_H
-#define ITEMWEAPON_H
+#ifndef ITEMARMOR_H
+#define ITEMARMOR_H
 
 #include "Item.h"
 
 #include <string>
 #include <vector>
 
-
-class ItemWeapon : public Item{
+class ItemArmor : public Item{
     public:
-        ItemWeapon();
-        ~ItemWeapon(){}
+        ItemArmor();
+        ~ItemArmor(){}
         void draw();
         void update();
         void drawInformationBox();
@@ -22,20 +21,22 @@ class ItemWeapon : public Item{
         double getItemSpecial(int special);
         std::vector<double> getItemSpecials();
         int getItemRarity();
-        int getItemPiece(){return 0;}
-        void setWeaponStats(std::vector<double> weaponStats, std::string name);
-        void setWeaponSpecials(std::vector<double> weaponSpecials);
-        void setWeaponParts(int rarity, int type, int prefix, int suffix);
+        int getItemPiece();
+        std::string getArmorPieceAsString(int armorPiece);
+        void setArmorStats(std::vector<double> armorStats, std::string name, int armorPiece);
+        void setArmorSpecials(std::vector<double> armorSpecials);
+        void setArmorParts(int rarity, int type, int prefix, int suffix);
     protected:
     private:
-        int weaponRarity; //Normal - Uncommon - Rare - Epic - Legendary - Unique
-        int weaponType;
-        int weaponPrefix;
-        int weaponSuffix;
+        int armorRarity; //Normal - Uncommon - Rare - Epic - Legendary - Unique
+        int armorType;
+        int armorPrefix;
+        int armorSuffix;
 
         //Standard Weapon Statistics
-        std::string weaponName;
-        std::vector<double> weaponStats;/*
+        std::string armorName;
+        int armorPiece;
+        std::vector<double> armorStats;/*
         double minDamage;
         double maxDamage;
         double fireRate;
@@ -46,7 +47,7 @@ class ItemWeapon : public Item{
         double armorPenetration;*/
 
         //Special modification. Decided by rarity and level.
-        std::vector<double> weaponSpecials;/*
+        std::vector<double> armorSpecials;/*
         double fireStrength; //Burning
         double poisionStrength; //Poison
         double electricStrength; //Lightning. Bounces to closest target, losing a percentage of power depending on the distance
@@ -63,4 +64,4 @@ class ItemWeapon : public Item{
         bool hoveringOver;
 };
 
-#endif // WEAPON_H
+#endif // ITEMARMOR_H

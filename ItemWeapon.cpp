@@ -1,7 +1,6 @@
 #include "ItemWeapon.h"
 #include "Engine.h"
-
-LootSystem lootSystem;
+#include "InventoryState.h"
 
 ItemWeapon::ItemWeapon(){
     this->hoveringOver = false;
@@ -55,7 +54,12 @@ void ItemWeapon::update(){
     if(checkCollision(this->posX, this->posY, mouseX, mouseY, this->width, this->height, 0, 0)){
         this->hoveringOver = true;
         if(mouseButtonLeftClick){
-            playerList[0]->equipWeapon(this->entityId);
+            if(playerList[0]->getPlayerEquippedWeapon() == this->entityId && playerList[0]->getPlayerHasWeaponEquipped()){
+                playerList[0]->unequipWeapon();
+            }else{
+                playerList[0]->equipWeapon(this->entityId);
+            }
+            updateInventoryPlacement();
         }
     }
 }
@@ -67,7 +71,7 @@ void ItemWeapon::draw(){
 
     al_draw_filled_rectangle(this->posX, this->posY, this->posX+this->width, this->posY+this->height, lootSystem.getRarityColor(this->weaponRarity));
     if(this->hoveringOver){
-        this->drawInformationBox();
+        drawItemIDInformationBox = this->entityId;
     }
 }
 
@@ -120,7 +124,7 @@ void ItemWeapon::drawInformationBox(){
         }
     }
 
-    if(compareWeapons){
+    if(compareItems){
         double smallBoxWidth = 250, smallBoxHeight = 180;
 
         double offsetX = boxWidth+15;
@@ -182,7 +186,7 @@ void ItemWeapon::drawInformationBox(){
                 }
             }
         }else{
-            al_draw_text(mediumFont, equippedRarityColor, mouseX+offsetX, mouseY-smallBoxHeight, 0, "Player has no weapon equipped");
+            al_draw_text(mediumFont, al_map_rgb(255, 255, 255), mouseX+offsetX, mouseY-smallBoxHeight, 0, "Player has no weapon equipped");
         }
     }
 }

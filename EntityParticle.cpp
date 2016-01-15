@@ -86,7 +86,7 @@ void EntityParticle::updateMovePatternDelta(){
             setAngle(-atan2(this->getCenterPosition(0) - mouseX, this->getCenterPosition(1) - mouseY));
             this->setDeltaX(sin(this->angle)*this->movementSpeed), this->setDeltaY(-cos(this->angle)*this->movementSpeed);
             break;
-        case patternKeepMomentum:
+        case patternFriction:
             this->setDeltaX(deltaX_l*this->particleFrictionRatio), this->setDeltaY(deltaY_l*this->particleFrictionRatio);
             break;
         case patternGravity:

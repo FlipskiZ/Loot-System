@@ -3,13 +3,18 @@
 #include "MenuState.h"
 #include "GameState.h"
 #include "PlayState.h"
+#include "InventoryState.h"
 
 LivingPlayer::LivingPlayer(){
     maxInventorySpace = 0;
     playerLevel = 1;
     equippedWeapon = 0;
     fireRateHelper = 0;
-    weaponEquipped = false;
+    hasWeaponEquipped = false;
+    equippedArmor.resize(AMOUNT_ARMOR_PIECES);
+    hasArmorEquipped.resize(AMOUNT_ARMOR_PIECES);
+    baseMaxHP = 0, baseArmor = 0, baseMaxMovementSpeed = 0;
+    encumbranceRating = 0;
 }
 
 void LivingPlayer::playerUseKey(){
@@ -24,7 +29,7 @@ void LivingPlayer::playerUseKey(){
                         for(int i = 0; i < specialTileList.size(); i++){
                             if(specialTileList[i] != NULL && specialTileList[i]->getActive() && specialTileList[i]->getPosition(0) == x*tileSize && specialTileList[i]->getPosition(1) == y*tileSize){
                                 mapArray[x][y] = 0;
-                                vector<int> weapons = specialTileList[i]->getContainedWeapons();
+                                vector<int> weapons = specialTileList[i]->getContainedItems();
                                 specialTileList[i]->setActive(false);
                                 specialTileList[i] = NULL;
                                 for(int i = 0; i < weapons.size(); i++){
@@ -52,6 +57,21 @@ int LivingPlayer::getInventoryUsed(){
     return itemCount;
 }
 
+void LivingPlayer::setMaxHP(double maxHP){
+    this->livingMaxHP = maxHP;
+    this->livingHP = maxHP;
+    this->baseMaxHP = maxHP;
+}
+void LivingPlayer::setArmor(double armor){
+    this->livingArmor = armor;
+    this->baseArmor = armor;
+}
+void LivingPlayer::setMovementSpeed(double movementSpeed){
+    this->movementSpeed = movementSpeed;
+    this->maxMovementSpeed = movementSpeed;
+    this->baseMaxMovementSpeed = movementSpeed;
+}
+
 void LivingPlayer::setMaxInventorySpace(int maxInventorySpace){
     this->maxInventorySpace = maxInventorySpace;
     this->inventoryItemIDs.resize(maxInventorySpace, -1);
@@ -70,27 +90,75 @@ void LivingPlayer::removeItemFromInventory(int itemID){
     for(int i = 0; i < this->maxInventorySpace; i++){
         if(this->inventoryItemIDs[i] == itemID){
             this->inventoryItemIDs[i] = -1;
-            if(this->equippedWeapon == itemID){
-                this->weaponEquipped = false;
-            }
             return;
         }
     }
 }
 void LivingPlayer::equipWeapon(int weaponId){
+    int oldEquippedWeapon = -1;
+    if(this->getPlayerEquippedWeapon()){
+        oldEquippedWeapon = this->getPlayerEquippedWeapon();
+    }
     this->equippedWeapon = weaponId;
-    this->weaponEquipped = true;
+    this->hasWeaponEquipped = true;
+    this->removeItemFromInventory(weaponId);
+    if(oldEquippedWeapon != -1){
+        this->addItemToInventory(oldEquippedWeapon);
+    }
+}
+void LivingPlayer::unequipWeapon(){
+    if(this->getInventorySpaceLeft() > 0){
+        this->addItemToInventory(this->getPlayerEquippedWeapon());
+        this->hasWeaponEquipped = false;
+    }
+}
+void LivingPlayer::equipArmor(int armorId){
+    int oldEquippedArmor = -1;
+    if(this->getPlayerEquippedArmor(armorId)){
+        oldEquippedArmor = this->getPlayerEquippedArmor(armorId);
+    }
+    int armorPiece = itemList[armorId]->getItemPiece();
+    this->equippedArmor[armorPiece] = armorId;
+    this->hasArmorEquipped[armorPiece] = true;
+    this->removeItemFromInventory(armorId);
+    this->updateGearValues();
+    if(oldEquippedArmor != -1){
+        this->addItemToInventory(oldEquippedArmor);
+    }
+}
+void LivingPlayer::unequipArmor(int armorPiece){
+    if(this->getInventorySpaceLeft() > 0){
+        this->addItemToInventory(this->getPlayerEquippedArmor(armorPiece));
+        this->hasArmorEquipped[armorPiece] = false;
+        this->updateGearValues();
+    }
+}
+void LivingPlayer::updateGearValues(){
+    this->livingMaxHP = this->baseMaxHP, this->livingArmor = this->baseArmor, this->maxMovementSpeed = this->baseMaxMovementSpeed;
+    this->encumbranceRating = 0;
+    for(int i = 0; i < this->equippedArmor.size(); i++){
+        if(this->hasArmorEquipped[i]){
+            this->livingArmor += itemList[this->equippedArmor[i]]->getItemStat(armorValue);
+            this->encumbranceRating += itemList[this->equippedArmor[i]]->getItemStat(armorEncumbranceRating);
+            this->maxMovementSpeed += itemList[this->equippedArmor[i]]->getItemSpecial(armorAdditionalMovementSpeed);
+            this->livingMaxHP += itemList[this->equippedArmor[i]]->getItemSpecial(armorAdditionalLife);
+        }
+    }
+    this->movementSpeed = maxMovementSpeed;
+    if(this->livingHP > this->livingMaxHP){
+        this->livingHP = this->livingMaxHP;
+    }
 }
 void LivingPlayer::clearInventory(){
     for(int i = 0; i < this->inventoryItemIDs.size(); i++){
         if(inventoryItemIDs[i] != -1 && itemList[inventoryItemIDs[i]] != NULL){
-            itemList[inventoryItemIDs[i]]->setActive(false);
+            itemList[inventoryItemIDs[i]] = NULL;
         }else{
             break;
         }
     }
     fill(this->inventoryItemIDs.begin(), this->inventoryItemIDs.end(), -1);
-    this->weaponEquipped = false;
+    this->hasWeaponEquipped = false;
 }
 
 void LivingPlayer::takeDamage(double damage, bool crit, double armorBypass){
@@ -218,7 +286,7 @@ void LivingPlayer::healHP(double health){
 }
 
 void LivingPlayer::fireWeapon(){
-    if(!this->weaponEquipped){
+    if(!this->hasWeaponEquipped){
         return;
     }
     if(this->fireRateHelper >= itemList[this->equippedWeapon]->getItemStat(weaponFireRate)){

@@ -51,6 +51,8 @@
 		<Unit filename="InventoryState.h" />
 		<Unit filename="Item.cpp" />
 		<Unit filename="Item.h" />
+		<Unit filename="ItemArmor.cpp" />
+		<Unit filename="ItemArmor.h" />
 		<Unit filename="ItemWeapon.cpp" />
 		<Unit filename="ItemWeapon.h" />
 		<Unit filename="LivingEntity.cpp" />

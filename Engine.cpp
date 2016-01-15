@@ -2,6 +2,7 @@
 #include "MenuState.h"
 #include "GameState.h"
 #include "PlayState.h"
+#include "InventoryState.h"
 
 void Engine::init(const char* title, int width, int height, bool fullscreen){
 	// initialize ALLEGRO
@@ -68,7 +69,7 @@ void Engine::init(const char* title, int width, int height, bool fullscreen){
     mouseX = 0, mouseY = 0, volumeLevel = 1;
     lastKeyPress = 0, mouseWheel = 0;
 
-    compareWeapons = false;
+    compareItems = false;
 
     loadMapArray();
 

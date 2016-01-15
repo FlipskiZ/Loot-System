@@ -19,24 +19,38 @@ class LivingPlayer : public LivingEntity{
         int getMaxInventorySpace(){return this->maxInventorySpace;}
         int getInventoryItem(int pos){return this->inventoryItemIDs[pos];}
         int getInventoryUsed();
+        int getInventorySpaceLeft(){return this->getMaxInventorySpace()-this->getInventoryUsed();}
         int getPlayerLevel(){return this->playerLevel;}
         int getPlayerEquippedWeapon(){return this->equippedWeapon;}
-        bool getPlayerHasWeaponEquipped(){return this->weaponEquipped;}
+        bool getPlayerHasWeaponEquipped(){return this->hasWeaponEquipped;}
+        int getPlayerEquippedArmor(int armorPiece){return this->equippedArmor[armorPiece];}
+        bool getPlayerHasArmorEquipped(int armorPiece){return this->hasArmorEquipped[armorPiece];}
+        void updateGearValues();
 
+        void setMaxHP(double maxHP);
+        void setArmor(double armor);
+        void setMovementSpeed(double movementSpeed);
         void setPlayerLevel(int level){this->playerLevel = level;}
         void setMaxInventorySpace(int maxInventorySpace);
         void addItemToInventory(int itemID);
         void removeItemFromInventory(int itemID);
         void clearInventory();
         void equipWeapon(int weaponId);
+        void unequipWeapon();
+        void equipArmor(int armorId);
+        void unequipArmor(int armorPiece);
 
     protected:
     private:
+        double baseMaxHP, baseArmor, baseMaxMovementSpeed;
+        double encumbranceRating;
+
         int maxInventorySpace;
         std::vector<int> inventoryItemIDs;
 
         double playerLevel;
         int equippedWeapon;
+        std::vector<int> equippedArmor;
 
         double fireRateHelper;
 
@@ -46,7 +60,8 @@ class LivingPlayer : public LivingEntity{
 
         bool borderingChest;
 
-        bool weaponEquipped;
+        bool hasWeaponEquipped;
+        std::vector<bool> hasArmorEquipped;
 };
 
 #endif // PLAYER_H
